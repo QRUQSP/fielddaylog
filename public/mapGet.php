@@ -89,8 +89,6 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
                 if( file_exists($ciniki['config']['qruqsp.core']['modules_dir'] . '/fielddaylog/maps/' . $s . '.png') ) {
                     $overlay = new Imagick($ciniki['config']['qruqsp.core']['modules_dir'] . '/fielddaylog/maps/' . $s . '.png');
                     $map->compositeImage($overlay, Imagick::COMPOSITE_DEFAULT, 0, 0);
-//                    $map->compositeImage($overlay, Imagick::COMPOSITE_COPY, 0, 0);
-                    error_log('done: ' . microtime());
                 }
             }
         }

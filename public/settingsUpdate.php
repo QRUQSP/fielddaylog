@@ -66,6 +66,17 @@ function qruqsp_fielddaylog_settingsUpdate(&$ciniki) {
         'class',
         'section',
         'ui-notes',
+        'category-operator',
+        'category-assisted',
+        'category-power',
+        'category-station',
+        'category-transmitter',
+        'name',
+        'address',
+        'city',
+        'state',
+        'postal',
+        'country',
         );
     //
     // Check each valid setting and see if a new value was passed in the arguments for it.

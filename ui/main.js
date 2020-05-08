@@ -352,23 +352,22 @@ function qruqsp_fielddaylog_main() {
         this.showHideSections(['search', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats']);
         this.refreshMap();
     }
-    this.menu.expandUI = function() {
+/*    this.menu.expandUI = function() {
         if( this.uisize == 'large' ) {
             this.uisize = 'normal';
         } else {
             this.uisize = 'large';
         }
         this.reopen();
-    }
+    } */
     this.menu.refreshMap = function() {
         console.log('refresh map');
         var url = M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID, 'sections':this.data.map_sections}); // + '&t=' + new Date().getTime();
-//        url = '/qruqsp-mods/fielddaylog/ui/maps/base.jpg';
         var e = M.gE(this.panelUID + '_map_image_id_preview').firstChild;
         e.src = url;
     }
     this.menu.downloadCabrillo = function() {
-
+        M.api.openFile('qruqsp.fielddaylog.exportCabrillo', {'tnid':M.curTenantID});
     }
     this.menu.reopen = function(cb) {
         M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
@@ -614,7 +613,7 @@ function qruqsp_fielddaylog_main() {
     //
     // The settings panel
     //
-    this.settings = new M.panel('Contact', 'qruqsp_fielddaylog_main', 'settings', 'mc', 'narrow', 'sectioned', 'qruqsp.fielddaylog.main.settings');
+    this.settings = new M.panel('Contact', 'qruqsp_fielddaylog_main', 'settings', 'mc', 'medium', 'sectioned', 'qruqsp.fielddaylog.main.settings');
     this.settings.data = null;
     this.settings.settings_id = 0;
     this.settings.nplist = [];
@@ -626,6 +625,31 @@ function qruqsp_fielddaylog_main() {
             }},
         '_ui':{'label':'Interface Settings', 'fields':{
             'ui-notes':{'label':'Use notes', 'type':'toggle', 'default':'no', 'toggles':{'no':'No', 'yes':'Yes'}},
+            }},
+        '_logging':{'label':'Cabrillo Export Details', 'fields':{
+            'category-operator':{'label':'Operator', 'type':'toggle', 'default':'SINGLE-OP', 'toggles':{'SINGLE-OP':'Single Operator', 'MULTI-OP':'Multi-Operator'}},
+            'category-assisted':{'label':'Assisted', 'type':'toggle', 'default':'ASSISTED', 'toggles':{'ASSISTED':'Assisted', 'NON-ASSISTED':'Non-Assisted'}},
+            'category-power':{'label':'Power', 'type':'toggle', 'default':'LOW', 'toggles':{'QRP-BATTERY':'QRP-Battery', 'QRP':'QRP', 'LOW':'Low < 150w', 'HIGH':'High'}},
+            'category-station':{'label':'Station', 'type':'toggle', 'default':'FIXED', 'toggles':{'FIXED':'Fixed', 
+                'MOBILE':'Mobile', 
+                'PORTABLE':'Portable', 
+                'ROVER':'Rover', 
+                'ROVER-LIMITED':'Rover-Limited', 
+                'ROVER-UNLIMITED':'Rover-Unlimited', 
+                }},
+            'category-transmitter':{'label':'Transmitter', 'type':'toggle', 'default':'ONE', 'toggles':{
+                'ONE':'One',
+                'TWO':'Two',
+                'LIMITED':'Limited',
+                'UNLIMITED':'Unlimited',
+                'SWL':'SWL',
+                }},
+            'name':{'label':'Name', 'type':'text'},
+            'address':{'label':'Address', 'type':'text'},
+            'city':{'label':'City', 'type':'text'},
+            'state':{'label':'State/Province', 'type':'text'},
+            'postal':{'label':'ZIP/Postal Code', 'type':'text'},
+            'country':{'label':'Country', 'type':'text'},
             }},
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.qruqsp_fielddaylog_main.settings.save();'},
