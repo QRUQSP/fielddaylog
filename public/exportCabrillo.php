@@ -4,6 +4,8 @@
 // -----------
 // This method will return everything for the UI for Field Day Logger
 //
+// Cabrillo spec found at: http://wwrof.org/cabrillo/cabrillo-specification-v3/
+//
 // Arguments
 // ---------
 // api_key:

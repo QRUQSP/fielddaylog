@@ -35,7 +35,7 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
-        'sections'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'name'=>'Sections'), 
+//        'sections'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'name'=>'Sections'), 
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -53,6 +53,40 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
     }
 
     //
+    // Get the list of sections
+    //
+    $strsql = "SELECT DISTINCT section "
+        . "FROM qruqsp_fielddaylog_qsos "
+        . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND YEAR(qso_dt) = 2020 "
+        . "ORDER BY section "
+        . "";
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
+    $rc = ciniki_core_dbQueryList($ciniki, $strsql, 'qruqsp.fielddaylog', 'sections', 'section');
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    $sections = isset($rc['sections']) ? $rc['sections'] : array();
+
+    //
+    // Check the current map sections
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
+    $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $args['tnid'], 'qruqsp.fielddaylog', 'settings', '');
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.9', 'msg'=>'', 'err'=>$rc['err']));
+    }
+    $settings = isset($rc['settings']) ? $rc['settings'] : array();
+
+    //
+    // Get the current map sections
+    //
+    $cache_map_sections = '';
+    if( isset($settings['cache_map_sections']) && $settings['cache_map_sections'] != '' ) {
+        $cache_map_sections = $settings['cache_map_sections'];
+    }
+
+    //
     // Check cache
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'cacheDir');
@@ -61,10 +95,7 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
         return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.12', 'msg'=>'', 'err'=>$rc['err']));
     }
     $cache_file = $rc['cache_dir'] . '/fielddaymap.jpg';
-    if( isset($ciniki['session']['qruqsp.fielddaylog']['map_sections']) 
-        && $ciniki['session']['qruqsp.fielddaylog']['map_sections'] == $args['sections']
-        && file_exists($cache_file)
-        ) {
+    if( is_array($sections) && implode(',', $sections) == $cache_map_sections && file_exists($cache_file)) {
         $map = new Imagick($cache_file);
     } else {
 /*        $map = imagecreatefrompng($ciniki['config']['qruqsp.core']['modules_dir'] . '/fielddaylog/maps/back_with_lines.png');
@@ -83,9 +114,9 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
         $map->writeImage($cache_file); 
 */
         $map = new Imagick($ciniki['config']['qruqsp.core']['modules_dir'] . '/fielddaylog/maps/back_with_lines.png');
-       
-        if( isset($args['sections'][0]) && $args['sections'][0] != '' ) {
-            foreach($args['sections'] as $s) {
+      
+        if( count($sections) > 0 ) {
+            foreach($sections as $s) {
                 if( file_exists($ciniki['config']['qruqsp.core']['modules_dir'] . '/fielddaylog/maps/' . $s . '.png') ) {
                     $overlay = new Imagick($ciniki['config']['qruqsp.core']['modules_dir'] . '/fielddaylog/maps/' . $s . '.png');
                     $map->compositeImage($overlay, Imagick::COMPOSITE_DEFAULT, 0, 0);
@@ -96,8 +127,25 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
         $map->setImageCompressionQuality(60);
         $map->writeImage($cache_file); 
 
-        $ciniki['session']['qruqsp.fielddaylog']['map_sections'] = $args['sections'];
-        sort($ciniki['session']['qruqsp.fielddaylog']['map_sections']);
+        //
+        // Update the settings
+        //
+        $strsql = "INSERT INTO qruqsp_fielddaylog_settings (tnid, detail_key, detail_value, date_added, last_updated) "
+            . "VALUES ('" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "'"
+            . ", 'cache_map_sections'"
+            . ", '" . ciniki_core_dbQuote($ciniki, implode(',', $sections)) . "'"
+            . ", UTC_TIMESTAMP(), UTC_TIMESTAMP()) "
+            . "ON DUPLICATE KEY UPDATE detail_value = '" . ciniki_core_dbQuote($ciniki, implode(',', $sections)) . "' "
+            . ", last_updated = UTC_TIMESTAMP() "
+            . "";
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
+        $rc = ciniki_core_dbInsert($ciniki, $strsql, 'qruqsp.fielddaylog');
+        if( $rc['stat'] != 'ok' ) {
+            ciniki_core_dbTransactionRollback($ciniki, 'qruqsp.fielddaylog');
+            return $rc;
+        }
+//        $ciniki['session']['qruqsp.fielddaylog']['map_sections'] = $sections;
+//        sort($ciniki['session']['qruqsp.fielddaylog']['map_sections']);
     }
 
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT', true, 200);

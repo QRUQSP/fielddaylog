@@ -28,17 +28,22 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
         'mode'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Mode'),
         'frequency'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Frequency'),
         'operator'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Operator'),
+        'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
     $args = $rc['args'];
     $args['callsign'] = strtoupper($args['callsign']);
-    $args['class'] = strtoupper($args['class']);
     $args['section'] = strtoupper($args['section']);
 
     $dt = new DateTime('now', new DateTimezone('UTC'));
     $args['qso_dt'] = $dt->format('Y-m-d H:i;s');
+
+    $args['class'] = trim(strtoupper($args['class']));
+    if( !preg_match("/^[0-9]+[A-F]$/", $args['class']) ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
+    }
 
     if( !in_array($args['mode'], array('CW', 'PH', 'DIG')) ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.13', 'msg'=>'Please choose a mode'));
@@ -51,6 +56,24 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     $rc = qruqsp_fielddaylog_checkAccess($ciniki, $args['tnid'], 'qruqsp.fielddaylog.qsoAdd');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
+    }
+
+    //
+    // Load the settings
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
+    $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $args['tnid'], 'qruqsp.fielddaylog', 'settings', '');
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.9', 'msg'=>'', 'err'=>$rc['err']));
+    }
+    $settings = isset($rc['settings']) ? $rc['settings'] : array();
+
+    //
+    // Get the current map sections
+    //
+    $cache_map_sections = array();
+    if( isset($settings['cache_map_sections']) ) {
+        $cache_map_sections = explode(',', $settings['cache_map_sections']);
     }
 
     //
@@ -117,9 +140,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     //
     // Update the map if new section
     //
-    if( !isset($ciniki['session']['qruqsp.fielddaylog']['map_sections']) 
-        || !in_array($args['section'], $ciniki['session']['qruqsp.fielddaylog']['map_sections'])
-        ) {
+    if( !in_array($args['section'], $cache_map_sections) ) {
         //
         // Check cache
         //
@@ -140,8 +161,29 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
         }
         $map->writeImage($cache_file);
 
-        $ciniki['session']['qruqsp.fielddaylog']['map_sections'][] = $args['section'];
-        sort($ciniki['session']['qruqsp.fielddaylog']['map_sections']);
+        $cache_map_sections[] = $args['section'];
+        sort($cache_map_sections);
+
+        //
+        // Update the settings
+        //
+        $strsql = "INSERT INTO qruqsp_fielddaylog_settings (tnid, detail_key, detail_value, date_added, last_updated) "
+            . "VALUES ('" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "'"
+            . ", 'cache_map_sections'"
+            . ", '" . ciniki_core_dbQuote($ciniki, implode(',', $cache_map_sections)) . "'"
+            . ", UTC_TIMESTAMP(), UTC_TIMESTAMP()) "
+            . "ON DUPLICATE KEY UPDATE detail_value = '" . ciniki_core_dbQuote($ciniki, implode(',', $cache_map_sections)) . "' "
+            . ", last_updated = UTC_TIMESTAMP() "
+            . "";
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
+        $rc = ciniki_core_dbInsert($ciniki, $strsql, 'qruqsp.fielddaylog');
+        if( $rc['stat'] != 'ok' ) {
+            ciniki_core_dbTransactionRollback($ciniki, 'qruqsp.fielddaylog');
+            return $rc;
+        }
+
+//        $ciniki['session']['qruqsp.fielddaylog']['map_sections'][] = $args['section'];
+//        sort($ciniki['session']['qruqsp.fielddaylog']['map_sections']);
     }
 
     ciniki_core_loadMethod($ciniki, 'qruqsp', 'fielddaylog', 'public', 'get');

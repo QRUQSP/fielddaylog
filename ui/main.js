@@ -81,6 +81,8 @@ function qruqsp_fielddaylog_main() {
                 'vareas':{'label':'Sections', 'fn':'M.qruqsp_fielddaylog_main.menu.switchTab(\'vareas\');'},
                 'map':{'label':'Map', 'fn':'M.qruqsp_fielddaylog_main.menu.switchTab(\'map\');'},
                 'stats':{'label':'Stats', 'fn':'M.qruqsp_fielddaylog_main.menu.switchTab(\'stats\');'},
+                'usbandplan':{'label':'US', 'fn':'M.qruqsp_fielddaylog_main.menu.switchTab(\'usbandplan\');'},
+                'cdnbandplan':{'label':'Canada', 'fn':'M.qruqsp_fielddaylog_main.menu.switchTab(\'cdnbandplan\');'},
             }},
 //        'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':1,
 //            'visible':function() { return M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'qsos' ? 'yes' : 'hidden'; },
@@ -129,7 +131,7 @@ function qruqsp_fielddaylog_main() {
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'map' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
                 ? 'yes' : 'hidden'; },
-            'html':'Map provided by Tim EI8IC',
+            'html':'Map provided by Tim EI8IC, for more information visit: <a target="_blank" href="https://www.mapability.com/ei8ic/maps/sections.php">https://www.mapability.com/ei8ic/maps/sections.php</a>',
             },
         'mode_band_stats':{'label':'Statistics', 'type':'simplegrid', 'num_cols':15,
             'visible':function() { return M.size != 'compact' 
@@ -157,11 +159,33 @@ function qruqsp_fielddaylog_main() {
             'cellClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'footerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             },
+        'usbandplan':{'label':'US Band Plan', 'type':'imageform',
+            'visible':function() { return M.size != 'compact' 
+                && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'usbandplan' 
+                    || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
+                ? 'yes' : 'hidden'; },
+            'fields':{
+                'usbandplan_image_id':{'label':'', 'type':'image_id', 'dynamic':'no', 'hidelabel':'yes', 'size':'large', 'controls':'no', 'history':'no'},
+            }},
+        'cdnbandplan':{'label':'Canadian Band Plan', 'type':'imageform',
+            'visible':function() { return M.size != 'compact' 
+                && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'cdnbandplan' 
+                    || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
+                ? 'yes' : 'hidden'; },
+            'fields':{
+                'cdnbandplan_image_id':{'label':'', 'type':'image_id', 'dynamic':'no', 'hidelabel':'yes', 'size':'large', 'controls':'no', 'history':'no'},
+            }},
     }
     this.menu.imageURL = function(s, i, d, img_id) {
         //return '/qruqsp-mods/fielddaylog/ui/maps/base.jpg';
 //        return M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID, 'sections':'ONN,NNY,CO,IA,WI,NM,MS,LA,AR'});
-        return M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID, 'sections':this.data.map_sections});
+        if( s == 'cdnbandplan' ) {
+            return '/qruqsp-mods/fielddaylog/ui/cdnbandplan.jpg';
+        }
+        if( s == 'usbandplan' ) {
+            return '/qruqsp-mods/fielddaylog/ui/usbandplan.jpg';
+        }
+        return M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID});
     }
     this.menu.keyUp = function(e,s,i) {
         if( e.keyCode == 13 ) {
@@ -349,7 +373,7 @@ function qruqsp_fielddaylog_main() {
     this.menu.switchTab = function(t) {
         this.sections._tabs.selected = t;
         this.refreshSection('_tabs');
-        this.showHideSections(['search', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats']);
+        this.showHideSections(['search', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
         this.refreshMap();
     }
 /*    this.menu.expandUI = function() {
@@ -361,8 +385,7 @@ function qruqsp_fielddaylog_main() {
         this.reopen();
     } */
     this.menu.refreshMap = function() {
-        console.log('refresh map');
-        var url = M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID, 'sections':this.data.map_sections}); // + '&t=' + new Date().getTime();
+        var url = M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID}) + '&t=' + new Date().getTime();
         var e = M.gE(this.panelUID + '_map_image_id_preview').firstChild;
         e.src = url;
     }
@@ -390,8 +413,8 @@ function qruqsp_fielddaylog_main() {
             p.data.map_sections = rsp.map_sections;
             p.data.stats = rsp.stats;
             p.showHideSections(['_tabs']);
-            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats']); 
-            p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats']);
+            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']); 
+            p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
             p.show();
             p.refreshMap();
             });
@@ -405,6 +428,8 @@ function qruqsp_fielddaylog_main() {
             var p = M.qruqsp_fielddaylog_main.menu;
             p.data = rsp;
             p.data.map_image_id = 1;  // Needs to be > 0 for core code to work
+            p.data.usbandplan_image_id = 1;  // Needs to be > 0 for core code to work
+            p.data.cdnbandplan_image_id = 1;  // Needs to be > 0 for core code to work
             p.sections._notes.visible = 'hidden';
             if( M.size != 'compact' && rsp.settings != null && rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
                 p.sections._notes.visible = 'yes';
@@ -423,10 +448,12 @@ function qruqsp_fielddaylog_main() {
             var p = M.qruqsp_fielddaylog_main.menu;
             p.data = rsp;
             p.data.map_image_id = 1;  // Needs to be > 0 for core code to work
+            p.data.usbandplan_image_id = 1;  // Needs to be > 0 for core code to work
+            p.data.cdnbandplan_image_id = 1;  // Needs to be > 0 for core code to work
             p.setFieldValue('callsign', '');
             p.setFieldValue('class', '');
             p.setFieldValue('section', '');
-            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats']);
+            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
             p.refreshMap();
             M.gE(p.panelUID + '_callsign').focus();
         });

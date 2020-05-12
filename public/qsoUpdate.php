@@ -25,6 +25,7 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
         'mode'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Mode'),
         'frequency'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Frequency'),
         'operator'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Operator'),
+        'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -48,7 +49,10 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
         $args['callsign'] = strtoupper($args['callsign']);
     }
     if( isset($args['class']) ) {
-        $args['class'] = strtoupper($args['class']);
+        $args['class'] = trim(strtoupper($args['class']));
+        if( !preg_match("/^[0-9]+[A-F]$/", $args['class']) ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
+        }
     }
     if( isset($args['section']) ) {
         $args['section'] = strtoupper($args['section']);
