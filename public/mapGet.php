@@ -94,7 +94,12 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
     if( $rc['stat'] != 'ok' ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.12', 'msg'=>'', 'err'=>$rc['err']));
     }
+    if( !is_dir($rc['cache_dir']) ) {
+        mkdir($rc['cache_dir'], 0755, true);
+    }
     $cache_file = $rc['cache_dir'] . '/fielddaymap.jpg';
+    
+
     if( is_array($sections) && implode(',', $sections) == $cache_map_sections && file_exists($cache_file)) {
         $map = new Imagick($cache_file);
     } else {
