@@ -131,7 +131,7 @@ function qruqsp_fielddaylog_main() {
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'map' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
                 ? 'yes' : 'hidden'; },
-            'html':'Map provided by Tim EI8IC, for more information visit: <a target="_blank" href="https://www.mapability.com/ei8ic/maps/sections.php">https://www.mapability.com/ei8ic/maps/sections.php</a>',
+            'html':'Map provided by Tim EI8IC, for more information visit: <a target="_blank" href="https://www.mapability.com/ei8ic/maps/sections.php">https://www.mapability.com/ei8ic/maps/sections.php</a>. Maps are free to use with attribution to Tim EI8IC.',
             },
         'mode_band_stats':{'label':'Statistics', 'type':'simplegrid', 'num_cols':15,
             'visible':function() { return M.size != 'compact' 
