@@ -72,6 +72,9 @@ function qruqsp_fielddaylog_main() {
             'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
             'headerValues':['Date/Time', 'Callsign', 'Class', 'Section', 'Band', 'Mode'],
             'noData':'No duplicates found',
+            'rowFn':function(i, d) {
+                return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
+                },
             },
         '_tabs':{'label':'', 'type':'paneltabs', 'selected':'qsos', //'panelcolumn':1,
             'visible':function() { return M.size != 'compact' && M.qruqsp_fielddaylog_main.menu.uisize == 'normal' ? 'yes' : 'hidden'; },
@@ -100,7 +103,10 @@ function qruqsp_fielddaylog_main() {
             'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'noData':'No contacts',
             'addTxt':'Add Contact',
-            'addFn':'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',0,null);'
+            'addFn':'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',0,null);',
+            'rowFn':function(i, d) {
+                return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
+                },
             },
         'areas':{'label':'Sections', 'type':'simplegrid', 'num_cols':14, //'panelcolumn':2,
             'visible':function() { return M.size != 'compact' 
@@ -131,7 +137,7 @@ function qruqsp_fielddaylog_main() {
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'map' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
                 ? 'yes' : 'hidden'; },
-            'html':'Map provided by Tim EI8IC, for more information visit: <a target="_blank" href="https://www.mapability.com/ei8ic/maps/sections.php">https://www.mapability.com/ei8ic/maps/sections.php</a>. Maps are free to use with attribution to Tim EI8IC.',
+            'html':'Map by <a href="https://www.mapability.com/ei8ic/maps/sections.php" target="_blank">EI8IC</a>. License: <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>.',
             },
         'mode_band_stats':{'label':'Statistics', 'type':'simplegrid', 'num_cols':15,
             'visible':function() { return M.size != 'compact' 
@@ -154,7 +160,7 @@ function qruqsp_fielddaylog_main() {
             'cellClasses':['bold', ''],
             'sortable':'yes',
             'sortTypes':['text','number','number','number','number','number','number','number','number','number','number','number','number','number','number'],
-            'headerValues':['Mode','160','80','40','20','15','10','6','2','220','70','SAT','GOTA','Other','Totals'],
+            'headerValues':['Section','160','80','40','20','15','10','6','2','220','70','SAT','GOTA','Other','Totals'],
             'headerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'cellClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'footerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
@@ -222,7 +228,7 @@ function qruqsp_fielddaylog_main() {
         return this.cellValue(s, i, j, d);
     }
     this.menu.liveSearchResultRowFn = function(s, f, i, j, d) {
-        return this.rowFn(s, i, d);
+        return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
     }
     this.menu.cellValue = function(s, i, j, d) {
         if( s == 'scores' || s == 'mydetails' ) {
@@ -341,12 +347,6 @@ function qruqsp_fielddaylog_main() {
             return this.sections[s].cellClasses[j];
         }
         return '';
-    }
-    this.menu.rowFn = function(s, i, d) {
-        if( s == 'qsos' || s == 'recent' || s == 'duplicates' ) {
-            return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
-        }
-        return null;
     }
     this.menu.footerValue = function(s, i, sc) {
         if( s == 'mode_band_stats' || s == 'section_band_stats' ) {
