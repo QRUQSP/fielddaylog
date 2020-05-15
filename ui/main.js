@@ -390,7 +390,21 @@ function qruqsp_fielddaylog_main() {
         e.src = url;
     }
     this.menu.downloadCabrillo = function() {
-        M.api.openFile('qruqsp.fielddaylog.exportCabrillo', {'tnid':M.curTenantID});
+        // Check settings to make sure they've filled in
+        if( this.data.settings == null 
+            || this.data.settings.callsign == null || this.data.settings.callsign == ''
+            || this.data.settings['class'] == null || this.data.settings['class'] == ''
+            || this.data.settings['section'] == null || this.data.settings['section'] == ''
+            || this.data.settings['category-operator'] == null || this.data.settings['category-operator'] == ''
+            || this.data.settings['category-assisted'] == null || this.data.settings['category-assisted'] == ''
+            || this.data.settings['category-power'] == null || this.data.settings['category-power'] == ''
+            || this.data.settings['category-station'] == null || this.data.settings['category-station'] == ''
+            || this.data.settings['category-transmitter'] == null || this.data.settings['category-transmitter'] == ''
+            ) {
+            alert('Before you can download Cabrillo file you must click on Settings in the top right and configure your station.');
+        } else {
+            M.api.openFile('qruqsp.fielddaylog.exportCabrillo', {'tnid':M.curTenantID});
+        }
     }
     this.menu.reopen = function(cb) {
         M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
@@ -412,6 +426,7 @@ function qruqsp_fielddaylog_main() {
             p.data.sections = rsp.sections;
             p.data.map_sections = rsp.map_sections;
             p.data.stats = rsp.stats;
+            p.data.settings = rsp.settings;
             p.showHideSections(['_tabs']);
             p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']); 
             p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
