@@ -51,7 +51,7 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
     if( isset($args['class']) ) {
         $args['class'] = trim(strtoupper($args['class']));
         if( !preg_match("/^[0-9]+[A-F]$/", $args['class']) ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.25', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
         }
     }
     if( isset($args['section']) ) {
@@ -62,7 +62,7 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
         ciniki_core_loadMethod($ciniki, 'qruqsp', 'fielddaylog', 'private', 'sectionsLoad');
         $rc = qruqsp_fielddaylog_sectionsLoad($ciniki, $args['tnid']);
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.10', 'msg'=>'', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.21', 'msg'=>'', 'err'=>$rc['err']));
         }
         $sections = $rc['sections'];
 
@@ -70,11 +70,11 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
         // Check the section is valid
         //
         if( !isset($sections[$args['section']]) ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid section'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.24', 'msg'=>'Invalid section'));
         }
     }
     if( isset($args['mode']) && !in_array($args['mode'], array('CW', 'PH', 'DIG')) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.13', 'msg'=>'Please choose a mode'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.28', 'msg'=>'Please choose a mode'));
     }
 
     //

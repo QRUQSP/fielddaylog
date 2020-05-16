@@ -42,7 +42,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
 
     $args['class'] = trim(strtoupper($args['class']));
     if( !preg_match("/^[0-9]+[A-F]$/", $args['class']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.23', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
     }
 
     if( !in_array($args['mode'], array('CW', 'PH', 'DIG')) ) {
@@ -64,7 +64,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
     $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $args['tnid'], 'qruqsp.fielddaylog', 'settings', '');
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.9', 'msg'=>'', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.19', 'msg'=>'', 'err'=>$rc['err']));
     }
     $settings = isset($rc['settings']) ? $rc['settings'] : array();
 

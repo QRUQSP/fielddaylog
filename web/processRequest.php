@@ -66,7 +66,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
         $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $tnid, 'qruqsp.fielddaylog', 'settings', '');
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.9', 'msg'=>'', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.15', 'msg'=>'', 'err'=>$rc['err']));
         }
         $settings = isset($rc['settings']) ? $rc['settings'] : array();
 
@@ -84,7 +84,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
         ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'cacheDir');
         $rc = ciniki_tenants_hooks_cacheDir($ciniki, $tnid, array());
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.12', 'msg'=>'', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.27', 'msg'=>'', 'err'=>$rc['err']));
         }
         $cache_file = $rc['cache_dir'] . '/fielddaymap.jpg';
         $web_cache_file = $ciniki['tenant']['web_cache_dir'] . '/fielddaymap.jpg';
@@ -150,7 +150,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
         ciniki_core_loadMethod($ciniki, 'qruqsp', 'fielddaylog', 'private', 'sectionsLoad');
         $rc = qruqsp_fielddaylog_sectionsLoad($ciniki, $tnid);
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.10', 'msg'=>'', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.22', 'msg'=>'', 'err'=>$rc['err']));
         }
         $sections = $rc['sections'];
         $areas = $rc['areas'];
