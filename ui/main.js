@@ -625,15 +625,15 @@ function qruqsp_fielddaylog_main() {
         }
     }
     this.qso.remove = function() {
-        if( confirm('Are you sure you want to remove qso?') ) {
-            M.api.getJSONCb('qruqsp.fielddaylog.qsoDelete', {'tnid':M.curTenantID, 'qso_id':this.qso_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove qso?',null,function() {
+            M.api.getJSONCb('qruqsp.fielddaylog.qsoDelete', {'tnid':M.curTenantID, 'qso_id':M.qruqsp_fielddaylog_main.qso.qso_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.qruqsp_fielddaylog_main.qso.close();
             });
-        }
+        });
     }
     this.qso.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.qso_id) < (this.nplist.length - 1) ) {
