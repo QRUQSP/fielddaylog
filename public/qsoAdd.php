@@ -42,11 +42,11 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
 
     $args['class'] = trim(strtoupper($args['class']));
     if( !preg_match("/^[0-9]+[A-F]$/", $args['class']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.23', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
+        return array('stat'=>'warn', 'err'=>array('code'=>'qruqsp.fielddaylog.23', 'msg'=>'Invalid class, must be in the format NumberLetter, EG: 1D, 4E'));
     }
 
     if( !in_array($args['mode'], array('CW', 'PH', 'DIG')) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.13', 'msg'=>'Please choose a mode'));
+        return array('stat'=>'warn', 'err'=>array('code'=>'qruqsp.fielddaylog.13', 'msg'=>'Please choose a mode'));
     }
 
     //
