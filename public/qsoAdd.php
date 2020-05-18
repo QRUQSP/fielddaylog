@@ -64,7 +64,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
     $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $args['tnid'], 'qruqsp.fielddaylog', 'settings', '');
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.19', 'msg'=>'', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.19', 'msg'=>'Unable to load settings', 'err'=>$rc['err']));
     }
     $settings = isset($rc['settings']) ? $rc['settings'] : array();
 
@@ -82,7 +82,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'qruqsp', 'fielddaylog', 'private', 'sectionsLoad');
     $rc = qruqsp_fielddaylog_sectionsLoad($ciniki, $args['tnid']);
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.10', 'msg'=>'', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.10', 'msg'=>'Unable to load sections', 'err'=>$rc['err']));
     }
     $sections = $rc['sections'];
 
@@ -90,7 +90,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     // Check the section is valid
     //
     if( !isset($sections[$args['section']]) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid section'));
+        return array('stat'=>'warn', 'err'=>array('code'=>'qruqsp.fielddaylog.11', 'msg'=>'Invalid section'));
     }
 
     //
@@ -147,7 +147,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'hooks', 'cacheDir');
         $rc = ciniki_tenants_hooks_cacheDir($ciniki, $args['tnid'], array());
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.12', 'msg'=>'', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.12', 'msg'=>'Unable to load cached map', 'err'=>$rc['err']));
         }
         $cache_file = $rc['cache_dir'] . '/fielddaymap.jpg';
 
