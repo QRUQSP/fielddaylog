@@ -401,7 +401,7 @@ function qruqsp_fielddaylog_main() {
             || this.data.settings['category-station'] == null || this.data.settings['category-station'] == ''
             || this.data.settings['category-transmitter'] == null || this.data.settings['category-transmitter'] == ''
             ) {
-            alert('Before you can download Cabrillo file you must click on Settings in the top right and configure your station.');
+            M.alert('Before you can download Cabrillo file you must click on Settings in the top right and configure your station.');
         } else {
             M.api.openFile('qruqsp.fielddaylog.exportCabrillo', {'tnid':M.curTenantID});
         }
@@ -756,7 +756,7 @@ function qruqsp_fielddaylog_main() {
         //
         var ac = M.createContainer(ap, 'qruqsp_fielddaylog_main', 'yes');
         if( ac == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
         
