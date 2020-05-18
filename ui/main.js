@@ -2,6 +2,21 @@
 // This is the main app for the fielddaylog module
 //
 function qruqsp_fielddaylog_main() {
+    this.bandOptions = {
+        '160':'160 M', 
+        '80':'80 M', 
+        '40':'40 M', 
+        '20':'20 M', 
+        '15':'15 M', 
+        '10':'10 M', 
+        '6':'6 M', 
+        '2':'2 M', 
+        '220':'1.25 M', 
+        '440':'70 CM', 
+        'other':'Other', 
+        'satellite':'Satellite', 
+        'gota':'GOTA', 
+    };
     //
     // The panel to list the qso
     //
@@ -20,32 +35,17 @@ function qruqsp_fielddaylog_main() {
             'section':{'label':'Section', 'type':'text',
                 'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
                 },
-            //'band':{'label':'Band', 'type':'text'},
+            'frequency':{'label':'Frequency', 'type':'text',
+                'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
+                },
             'band':{'label':'Band', 'type':'select', 
                 'onchange':'M.qruqsp_fielddaylog_main.menu.updateDups',
-                'options':{
-                    '160':'160 M', 
-                    '80':'80 M', 
-                    '40':'40 M', 
-                    '20':'20 M', 
-                    '15':'15 M', 
-                    '10':'10 M', 
-                    '6':'6 M', 
-                    '2':'2 M', 
-                    '220':'1.25 M', 
-                    '440':'70 CM', 
-                    'other':'Other', 
-                    'satellite':'Satellite', 
-                    'gota':'GOTA', 
-                }},
-            //'mode':{'label':'Mode', 'type':'text'},
+                'options':this.bandOptions},
             'mode':{'label':'Mode', 'type':'toggle', 
                 'onchange':'M.qruqsp_fielddaylog_main.menu.updateDups',
                 'toggles':{'CW':'CW', 'PH':'PH', 'DIG':'DIG'},
                 },
-            'frequency':{'label':'Frequency', 'type':'text',
-                'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
-                },
+            'operator':{'label':'Operator', 'type':'text', 'visible':'no'},
             }},
         '_notes':{'label':'Notes', 'visible':'hidden', 'aside':'yes', 'fields':{
             'notes':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'small'},
@@ -417,6 +417,14 @@ function qruqsp_fielddaylog_main() {
             if( M.size != 'compact' && rsp.settings != null && rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
                 p.sections._notes.visible = 'yes';
             }
+            var e = M.gE(p.panelUID + '_operator');
+            if( e != null && e.parentNode != null && e.parentNode.parentNode != null ) {
+                if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                    e.parentNode.parentNode.style.display = 'table-row';
+                } else {
+                    e.parentNode.parentNode.style.display = 'none';
+                }
+            }
             p.data.scores = rsp.scores;
             p.data.mydetails = rsp.mydetails;
 //            p.data.qsos = rsp.qsos;
@@ -448,6 +456,10 @@ function qruqsp_fielddaylog_main() {
             p.sections._notes.visible = 'hidden';
             if( M.size != 'compact' && rsp.settings != null && rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
                 p.sections._notes.visible = 'yes';
+            }
+            p.sections.qso.fields.operator.visible = 'no';
+            if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                p.sections.qso.fields.operator.visible = 'yes';
             }
             p.refresh();
             p.show(cb);
@@ -555,14 +567,14 @@ function qruqsp_fielddaylog_main() {
     this.qso.nplist = [];
     this.qso.sections = {
         'general':{'label':'', 'fields':{
-            'qso_dt':{'label':'UTC Date Time of QSO', 'type':'text', 'required':'yes'},
+            'qso_dt':{'label':'UTC of QSO', 'type':'text', 'required':'yes'},
             'callsign':{'label':'Callsign', 'required':'yes', 'type':'text'},
             'class':{'label':'Class', 'required':'yes', 'type':'text'},
             'section':{'label':'Section', 'required':'yes', 'type':'text'},
-            'band':{'label':'Band', 'required':'yes', 'type':'text'},
-            'mode':{'label':'Mode', 'required':'yes', 'type':'text'},
             'frequency':{'label':'Frequency', 'type':'text'},
-            'operator':{'label':'Operator', 'type':'text'},
+            'band':{'label':'Band', 'type':'select', 'options':this.bandOptions},
+            'mode':{'label':'Mode', 'type':'toggle', 'toggles':{'CW':'CW', 'PH':'PH', 'DIG':'DIG'}},
+            'operator':{'label':'Operator', 'type':'text', 'visible':'no'},
             }},
         '_notes':{'label':'Notes', 'visible':'no', 'fields':{
             'notes':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'large'},
@@ -591,6 +603,10 @@ function qruqsp_fielddaylog_main() {
             p.sections._notes.visible = 'no';
             if( rsp.settings != null && rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
                 p.sections._notes.visible = 'yes';
+            }
+            p.sections.general.fields.operator.visible = 'no';
+            if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                p.sections.general.fields.operator.visible = 'yes';
             }
             p.refresh();
             p.show(cb);
@@ -695,11 +711,25 @@ function qruqsp_fielddaylog_main() {
             }},
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.qruqsp_fielddaylog_main.settings.save();'},
+            'clear':{'label':'Clear Contacts', 'fn':'M.qruqsp_fielddaylog_main.settings.clearQSOs();'},
             }},
         };
     this.settings.fieldValue = function(s, i, d) { return this.data[i]; }
     this.settings.fieldHistoryArgs = function(s, i) {
         return {'method':'qruqsp.fielddaylog.settingsHistory', 'args':{'tnid':M.curTenantID, 'setting':i}};
+    }
+    this.settings.clearQSOs = function() {
+        M.confirm("Are you sure you want to permanently delete all contacts? This is only advised during testing. Once deleted there is noway to recover the contacts.",null,function() {
+            M.confirm("Are you really sure you want to delete all contacts?","Yes, Delete Contacts",function() {
+                M.api.getJSONCb('qruqsp.fielddaylog.qsosDelete', {'tnid':M.curTenantID}, function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    }
+                    M.alert('All contacts have been deleted.');
+                });
+            });
+        });
     }
     this.settings.open = function(cb) {
         M.api.getJSONCb('qruqsp.fielddaylog.settingsGet', {'tnid':M.curTenantID}, function(rsp) {
