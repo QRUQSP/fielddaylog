@@ -86,6 +86,12 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.27', 'msg'=>'', 'err'=>$rc['err']));
         }
+        if( !is_dir($rc['cache_dir']) ) {
+            mkdir($rc['cache_dir'], 0755, true);
+        }
+        if( !is_dir($ciniki['tenant']['web_cache_dir']) ) {
+            mkdir($ciniki['tenant']['web_cache_dir'], 0755, true);
+        }
         $cache_file = $rc['cache_dir'] . '/fielddaymap.jpg';
         $web_cache_file = $ciniki['tenant']['web_cache_dir'] . '/fielddaymap.jpg';
         if( is_array($sections) && implode(',', $sections) == $cache_map_sections && file_exists($cache_file)) {
