@@ -27,7 +27,8 @@ function qruqsp_fielddaylog_main() {
     this.menu.sections = {
         'qso':{'label':'Contact', 'aside':'yes', 'fields':{
             'callsign':{'label':'Callsign', 'type':'text', 'autofocus':'yes',
-                'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
+//                'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
+                'livesearch':'yes', 'livesearchcols':3,
                 },
             'class':{'label':'Class', 'type':'text',
                 'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
@@ -50,10 +51,10 @@ function qruqsp_fielddaylog_main() {
         '_notes':{'label':'Notes', 'visible':'hidden', 'aside':'yes', 'fields':{
             'notes':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'small'},
             }},
-        'compact_dups':{'label':'', 'type':'simplegrid', 'num_cols':3,
-            'visible':function() { return M.size == 'compact' ? 'yes' : 'no'; },
-            'cellClasses':['multiline', 'multiline', 'multiline'],
-            },
+//        'compact_dups':{'label':'', 'type':'simplegrid', 'num_cols':3,
+//            'visible':function() { return M.size == 'compact' ? 'yes' : 'no'; },
+//            'cellClasses':['multiline', 'multiline', 'multiline'],
+//            },
         '_add':{'label':'', 'aside':'yes', 'buttons':{
             'add':{'label':'Add Contact', 'fn':'M.qruqsp_fielddaylog_main.menu.addQSO();'},
             }},
@@ -68,14 +69,14 @@ function qruqsp_fielddaylog_main() {
             'all':{'label':'Contact List', 'fn':'M.qruqsp_fielddaylog_main.qsos.open(\'M.qruqsp_fielddaylog_main.menu.open();\');'},
             'export':{'label':'Download Cabrillo', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadCabrillo();'},
             }},
-        'duplicates':{'label':'Duplicates', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
-            'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
-            'headerValues':['Date/Time', 'Callsign', 'Class', 'Section', 'Band', 'Mode'],
-            'noData':'No duplicates found',
-            'rowFn':function(i, d) {
-                return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
-                },
-            },
+//        'duplicates':{'label':'Duplicates', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
+//            'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
+//            'headerValues':['Date/Time', 'Callsign', 'Class', 'Section', 'Band', 'Mode'],
+//            'noData':'No duplicates found',
+//            'rowFn':function(i, d) {
+//                return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
+//                },
+//            },
         '_tabs':{'label':'', 'type':'paneltabs', 'selected':'qsos', //'panelcolumn':1,
             'visible':function() { return M.size != 'compact' && M.qruqsp_fielddaylog_main.menu.uisize == 'normal' ? 'yes' : 'hidden'; },
             'tabs':{
@@ -203,7 +204,8 @@ function qruqsp_fielddaylog_main() {
         return true;
     }
     this.menu.updateDups = function() {
-        M.api.getJSONBgCb('qruqsp.fielddaylog.dupSearch', {'tnid':M.curTenantID, 'callsign':this.formValue('callsign')}, function(rsp) {
+        this.liveSearchCb('qso', 'callsign', this.formValue('callsign'));
+/*        M.api.getJSONBgCb('qruqsp.fielddaylog.dupSearch', {'tnid':M.curTenantID, 'callsign':this.formValue('callsign')}, function(rsp) {
             var p = M.qruqsp_fielddaylog_main.menu;
             if( M.size == 'compact' ) {
                 p.data.compact_dups = rsp.duplicates;
@@ -215,21 +217,35 @@ function qruqsp_fielddaylog_main() {
             } else {
                 p.refreshSection('duplicates');
             }
-        });
+        }); */
+    }
+    this.menu.clearLiveSearches = function(s, f) {
+        
     }
     this.menu.liveSearchCb = function(s, i, v) {
-        if( s == 'search' && v != '' ) {
-            M.api.getJSONBgCb('qruqsp.fielddaylog.qsoSearch', {'tnid':M.curTenantID, 'start_needle':v, 'limit':'25'}, function(rsp) {
-                M.qruqsp_fielddaylog_main.menu.liveSearchShow('search',null,M.gE(M.qruqsp_fielddaylog_main.menu.panelUID + '_' + s), rsp.qsos);
+        if( s == 'qso' && v != '' ) {
+            M.api.getJSONBgCb('qruqsp.fielddaylog.dupSearch', {'tnid':M.curTenantID, 'callsign':v, 'limit':'25'}, function(rsp) {
+                M.qruqsp_fielddaylog_main.menu.liveSearchShow(s,i,M.gE(M.qruqsp_fielddaylog_main.menu.panelUID + '_' + i), rsp.duplicates);
                 });
         }
     }
     this.menu.liveSearchResultValue = function(s, f, i, j, d) {
+        
+//        return d.callsign + ' ' + d['class'] + ' ' + d.section + ' ' + d.band + ' ' + d.mode;
         return this.cellValue(s, i, j, d);
     }
-    this.menu.liveSearchResultRowFn = function(s, f, i, j, d) {
-        return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
+    this.menu.liveSearchResultClass = function(s, f, i, j, d) {
+        if( d.callsign == this.formValue('callsign').toUpperCase() 
+            && d.band == this.formValue('band').toUpperCase()
+            && d.mode == this.formValue('mode').toUpperCase()
+            ) {
+            return 'multiline statusred';
+        }
+        return 'multiline ';
     }
+//    this.menu.liveSearchResultRowFn = function(s, f, i, j, d) {
+//        return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
+//    }
     this.menu.cellValue = function(s, i, j, d) {
         if( s == 'scores' || s == 'mydetails' ) {
             switch(j) {
@@ -237,7 +253,7 @@ function qruqsp_fielddaylog_main() {
                 case 1: return d.value;
             }
         }
-        if( s == 'compact_dups' ) {
+        if( s == 'qso' || s == 'compact_dups' ) {
             switch(j) {
                 case 0: return M.multiline(d.callsign, d.qso_dt_display);
                 case 1: return M.multiline(d['class'], d.section);
