@@ -235,7 +235,7 @@ function qruqsp_fielddaylog_get($ciniki) {
         );
 
     $rsp['mydetails'] = array(
-        array('label' => 'Callsign', 'value' => (isset($settings['callsign']) ? $settings['callsign'] : '')),
+        array('label' => 'Call Sign', 'value' => (isset($settings['callsign']) ? $settings['callsign'] : '')),
         array('label' => 'Class', 'value' => (isset($settings['class']) ? $settings['class'] : '')),
         array('label' => 'Section', 'value' => (isset($settings['section']) ? $settings['section'] : '')),
         );

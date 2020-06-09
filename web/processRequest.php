@@ -251,7 +251,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
             'header' => 'yes',
             'columns' => array( 
                 array('label' => 'Date/Time', 'class' => 'alignleft', 'field' => 'qso_dt_display'),
-                array('label' => 'Callsign', 'class' => 'alignleft', 'field' => 'callsign'),
+                array('label' => 'Call Sign', 'class' => 'alignleft', 'field' => 'callsign'),
                 array('label' => 'Class', 'class' => 'aligncenter', 'field' => 'class'),
                 array('label' => 'Section', 'class' => 'aligncenter', 'field' => 'section'),
                 array('label' => 'Band', 'class' => 'aligncenter', 'field' => 'band'),

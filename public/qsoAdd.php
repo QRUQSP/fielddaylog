@@ -21,7 +21,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
 //        'qso_dt'=>array('required'=>'yes', 'blank'=>'no', 'type'=>'datetimetoutc', 'name'=>'UTC Date Time of QSO'),
-        'callsign'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Callsign'),
+        'callsign'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Call Sign'),
         'class'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Class'),
         'section'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Section'),
         'band'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Band'),

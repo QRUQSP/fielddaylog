@@ -26,7 +26,7 @@ function qruqsp_fielddaylog_main() {
     this.menu.uisize = 'normal';
     this.menu.sections = {
         'qso':{'label':'Contact', 'aside':'yes', 'fields':{
-            'callsign':{'label':'Callsign', 'type':'text', 'autofocus':'yes',
+            'callsign':{'label':'Call Sign', 'type':'text', 'autofocus':'yes',
 //                'onkeyup':'M.qruqsp_fielddaylog_main.menu.keyUp',
                 'livesearch':'yes', 'livesearchcols':3,
                 },
@@ -71,7 +71,7 @@ function qruqsp_fielddaylog_main() {
             }},
 //        'duplicates':{'label':'Duplicates', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
 //            'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
-//            'headerValues':['Date/Time', 'Callsign', 'Class', 'Section', 'Band', 'Mode'],
+//            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode'],
 //            'noData':'No duplicates found',
 //            'rowFn':function(i, d) {
 //                return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
@@ -99,7 +99,7 @@ function qruqsp_fielddaylog_main() {
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'qsos' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
                 ? 'yes' : 'hidden'; },
-            'headerValues':['Date/Time', 'Callsign', 'Class', 'Section', 'Band', 'Mode'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode'],
             'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'noData':'No contacts',
@@ -241,7 +241,7 @@ function qruqsp_fielddaylog_main() {
             ) {
             return 'multiline statusred';
         }
-        return 'multiline ';
+        return 'multiline';
     }
 //    this.menu.liveSearchResultRowFn = function(s, f, i, j, d) {
 //        return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
@@ -512,11 +512,11 @@ function qruqsp_fielddaylog_main() {
     this.qsos.sections = {
         'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':6,
             'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
-            'hint':'Search callsigns',
-            'noData':'No callsigns found',
+            'hint':'Search call signs',
+            'noData':'No call signs found',
             },
         'qsos':{'label':'All Contacts', 'type':'simplegrid', 'num_cols':6, 
-            'headerValues':['Date/Time', 'Callsign', 'Class', 'Section', 'Band', 'Mode'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode'],
 //
 //          Sorting on a large list (+1000) will stall browser for multiple minutes, not good!
 //            'sortable':'yes',
@@ -584,7 +584,7 @@ function qruqsp_fielddaylog_main() {
     this.qso.sections = {
         'general':{'label':'', 'fields':{
             'qso_dt':{'label':'UTC of QSO', 'type':'text', 'required':'yes'},
-            'callsign':{'label':'Callsign', 'required':'yes', 'type':'text'},
+            'callsign':{'label':'Call Sign', 'required':'yes', 'type':'text'},
             'class':{'label':'Class', 'required':'yes', 'type':'text'},
             'section':{'label':'Section', 'required':'yes', 'type':'text'},
             'frequency':{'label':'Frequency', 'type':'text'},
@@ -692,8 +692,8 @@ function qruqsp_fielddaylog_main() {
     this.settings.settings_id = 0;
     this.settings.nplist = [];
     this.settings.sections = {
-        '_station':{'label':'Station Callsign', 'fields':{
-            'callsign':{'label':'Callsign', 'type':'text'},
+        '_station':{'label':'Station Call Sign', 'fields':{
+            'callsign':{'label':'Call Sign', 'type':'text'},
             'class':{'label':'Class', 'type':'text'},
             'section':{'label':'Section', 'type':'text'},
             }},

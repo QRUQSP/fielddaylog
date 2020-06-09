@@ -23,7 +23,7 @@ function qruqsp_fielddaylog_objects(&$ciniki) {
         'table' => 'qruqsp_fielddaylog_qsos',
         'fields' => array(
             'qso_dt' => array('name'=>'UTC Date Time of QSO'),
-            'callsign' => array('name'=>'Callsign'),
+            'callsign' => array('name'=>'Call Sign'),
             'class' => array('name'=>'Class'),
             'section' => array('name'=>'Section'),
             'band' => array('name'=>'Band'),
