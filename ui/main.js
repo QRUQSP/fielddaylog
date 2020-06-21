@@ -506,7 +506,7 @@ function qruqsp_fielddaylog_main() {
     //
     // The panel to list all the qso
     //
-    this.qsos = new M.panel('qso', 'qruqsp_fielddaylog_main', 'qsos', 'mc', 'large', 'sectioned', 'qruqsp.fielddaylog.main.qsos');
+    this.qsos = new M.panel('Contact', 'qruqsp_fielddaylog_main', 'qsos', 'mc', 'large', 'sectioned', 'qruqsp.fielddaylog.main.qsos');
     this.qsos.data = {};
     this.qsos.nplist = [];
     this.qsos.sections = {
@@ -687,7 +687,7 @@ function qruqsp_fielddaylog_main() {
     //
     // The settings panel
     //
-    this.settings = new M.panel('Contact', 'qruqsp_fielddaylog_main', 'settings', 'mc', 'medium', 'sectioned', 'qruqsp.fielddaylog.main.settings');
+    this.settings = new M.panel('Settings', 'qruqsp_fielddaylog_main', 'settings', 'mc', 'medium', 'sectioned', 'qruqsp.fielddaylog.main.settings');
     this.settings.data = null;
     this.settings.settings_id = 0;
     this.settings.nplist = [];
