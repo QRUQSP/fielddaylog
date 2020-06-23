@@ -66,6 +66,7 @@ function qruqsp_fielddaylog_settingsUpdate(&$ciniki) {
         'class',
         'section',
         'ui-notes',
+        'allow-dupes',
         'category-operator',
         'category-assisted',
         'category-power',

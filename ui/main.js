@@ -697,8 +697,9 @@ function qruqsp_fielddaylog_main() {
             'class':{'label':'Class', 'type':'text'},
             'section':{'label':'Section', 'type':'text'},
             }},
-        '_ui':{'label':'Interface Settings', 'fields':{
+        '_ui':{'label':'Options', 'fields':{
             'ui-notes':{'label':'Use notes', 'type':'toggle', 'default':'no', 'toggles':{'no':'No', 'yes':'Yes'}},
+            'allow-dupes':{'label':'Allow Duplicate QSOs', 'type':'toggle', 'default':'yes', 'toggles':{'no':'No', 'yes':'Yes'}},
             }},
         '_logging':{'label':'Cabrillo Export Details', 'fields':{
             'category-operator':{'label':'Operator', 'type':'toggle', 'default':'SINGLE-OP', 'toggles':{'SINGLE-OP':'Single Operator', 'MULTI-OP':'Multi-Operator'}},
@@ -775,6 +776,7 @@ function qruqsp_fielddaylog_main() {
             eval(cb);
         }
     }
+    this.settings.addButton('save', 'Save', 'M.qruqsp_fielddaylog_main.settings.save();');
     this.settings.addClose('Cancel');
 
     //

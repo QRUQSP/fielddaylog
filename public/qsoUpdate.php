@@ -78,6 +78,64 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
     }
 
     //
+    // Load existing qso
+    //
+    $strsql = "SELECT qruqsp_fielddaylog_qsos.id, "
+        . "qruqsp_fielddaylog_qsos.qso_dt, "
+        . "qruqsp_fielddaylog_qsos.callsign, "
+        . "qruqsp_fielddaylog_qsos.class, "
+        . "qruqsp_fielddaylog_qsos.section, "
+        . "qruqsp_fielddaylog_qsos.band, "
+        . "qruqsp_fielddaylog_qsos.mode, "
+        . "qruqsp_fielddaylog_qsos.frequency, "
+        . "qruqsp_fielddaylog_qsos.operator, "
+        . "qruqsp_fielddaylog_qsos.notes "
+        . "FROM qruqsp_fielddaylog_qsos "
+        . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND qruqsp_fielddaylog_qsos.id = '" . ciniki_core_dbQuote($ciniki, $args['qso_id']) . "' "
+        . "";
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'qruqsp.fielddaylog', 'qso');
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.30', 'msg'=>'Unable to load contact', 'err'=>$rc['err']));
+    }
+    if( !isset($rc['qso']) ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.31', 'msg'=>'Unable to find requested contact'));
+    }
+    $qso = $rc['qso'];
+    
+    //
+    // Load the settings
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
+    $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $args['tnid'], 'qruqsp.fielddaylog', 'settings', '');
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.19', 'msg'=>'Unable to load settings', 'err'=>$rc['err']));
+    }
+    $settings = isset($rc['settings']) ? $rc['settings'] : array();
+
+    //
+    // Check if allow-dupes is set and no
+    //
+    if( isset($settings['allow-dupes']) && $settings['allow-dupes'] == 'no' ) {
+        //
+        // Check for dupe
+        //
+        ciniki_core_loadMethod($ciniki, 'qruqsp', 'fielddaylog', 'private', 'checkDupe');
+        $rc = qruqsp_fielddaylog_checkDupe($ciniki, $args['tnid'], array(
+            'id' => $args['qso_id'],
+            'callsign' => (isset($args['callsign']) ? $args['callsign'] : $qso['callsign']),
+            'band' => (isset($args['band']) ? $args['band'] : $qso['band']),
+            'mode' => (isset($args['mode']) ? $args['mode'] : $qso['mode']),
+            ));
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.29', 'msg'=>'Unable to check for dupe', 'err'=>$rc['err']));
+        }
+        if( isset($rc['dupe']) && $rc['dupe'] == 'yes' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.30', 'msg'=>'Duplicate contact.'));
+        }
+    }
+
+    //
     // Start transaction
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionStart');

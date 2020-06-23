@@ -69,6 +69,23 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     $settings = isset($rc['settings']) ? $rc['settings'] : array();
 
     //
+    // Check if allow-dupes is set and no
+    //
+    if( isset($settings['allow-dupes']) && $settings['allow-dupes'] == 'no' ) {
+        //
+        // Check for dupe
+        //
+        ciniki_core_loadMethod($ciniki, 'qruqsp', 'fielddaylog', 'private', 'checkDupe');
+        $rc = qruqsp_fielddaylog_checkDupe($ciniki, $args['tnid'], $args);
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.29', 'msg'=>'Error', 'err'=>$rc['err']));
+        }
+        if( isset($rc['dupe']) && $rc['dupe'] == 'yes' ) {
+            return array('stat'=>'warn', 'err'=>array('code'=>'qruqsp.fielddaylog.30', 'msg'=>'Duplicate contact!'));
+        }
+    }
+
+    //
     // Get the current map sections
     //
     $cache_map_sections = array();
