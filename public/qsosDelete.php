@@ -50,18 +50,6 @@ function qruqsp_fielddaylog_qsosDelete(&$ciniki) {
     $qsos = isset($rc['rows']) ? $rc['rows'] : array();
 
     //
-    // Check if any modules are currently using this object
-    //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectCheckUsed');
-    $rc = ciniki_core_objectCheckUsed($ciniki, $args['tnid'], 'qruqsp.fielddaylog.qso', $args['qso_id']);
-    if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.14', 'msg'=>'Unable to check if the qso is still being used.', 'err'=>$rc['err']));
-    }
-    if( $rc['used'] != 'no' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.6', 'msg'=>'The qso is still in use. ' . $rc['msg']));
-    }
-
-    //
     // Start transaction
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionStart');
