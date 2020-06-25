@@ -562,19 +562,19 @@ function qruqsp_fielddaylog_main() {
     this.qsos.nplist = [];
     this.qsos.sections = {
         'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':6,
-            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator', 'Notes'],
             'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', '', ''],
             'hint':'Search call signs',
             'noData':'No call signs found',
             },
         'qsos':{'label':'All Contacts', 'type':'simplegrid', 'num_cols':6, 
-            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator', 'Notes'],
 //
 //          Sorting on a large list (+1000) will stall browser for multiple minutes, not good!
 //            'sortable':'yes',
 //            'sortTypes':['date', 'text', 'text', 'text', 'number', 'text'],
-            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
-            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
+            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', '', ''],
+            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', '', ''],
             'noData':'No contacts',
             'addTxt':'Add Contact',
             'addFn':'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.qsos.open();\',0,null);'
@@ -603,6 +603,7 @@ function qruqsp_fielddaylog_main() {
                 case 4: return d.band;
                 case 5: return d.mode;
                 case 6: return d.operator;
+                case 7: return d.notes;
             }
         }
     }
@@ -622,8 +623,13 @@ function qruqsp_fielddaylog_main() {
             p.sections.search.livesearchcols = 6;
             p.sections.qsos.num_cols = 6;
             if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
-                p.sections.search.livesearchcols = 7;
-                p.sections.qsos.num_cols = 7;
+                if( rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
+                    p.sections.search.livesearchcols = 8;
+                    p.sections.qsos.num_cols = 8;
+                } else {
+                    p.sections.search.livesearchcols = 7;
+                    p.sections.qsos.num_cols = 7;
+                }
             }
             p.nplist = (rsp.nplist != null ? rsp.nplist : null);
             p.refresh();

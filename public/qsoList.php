@@ -58,7 +58,8 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
         . "qruqsp_fielddaylog_qsos.mode, "
         . "qruqsp_fielddaylog_qsos.frequency, "
         . "qruqsp_fielddaylog_qsos.flags, "
-        . "qruqsp_fielddaylog_qsos.operator "
+        . "qruqsp_fielddaylog_qsos.operator, "
+        . "qruqsp_fielddaylog_qsos.notes "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "ORDER BY qso_dt DESC "
@@ -67,7 +68,7 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.fielddaylog', array(
         array('container'=>'qsos', 'fname'=>'id', 
             'fields'=>array('id', 'qso_dt', 'qso_dt_display', 'callsign', 'class', 'section', 
-                'band', 'mode', 'frequency', 'flags', 'operator',
+                'band', 'mode', 'frequency', 'flags', 'operator', 'notes',
                 )),
         ));
     if( $rc['stat'] != 'ok' ) {
