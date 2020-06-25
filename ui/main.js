@@ -72,7 +72,8 @@ function qruqsp_fielddaylog_main() {
             },
         '_buttons':{'label':'', 'aside':'yes', 'buttons':{
             'all':{'label':'Contact List', 'fn':'M.qruqsp_fielddaylog_main.qsos.open(\'M.qruqsp_fielddaylog_main.menu.open();\');'},
-            'export':{'label':'Download Cabrillo', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadCabrillo();'},
+            'cabrillo':{'label':'Download Cabrillo', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadCabrillo();'},
+            'excel':{'label':'Download Excel', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadExcel();'},
             }},
 //        'duplicates':{'label':'Duplicates', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
 //            'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
@@ -463,6 +464,9 @@ function qruqsp_fielddaylog_main() {
         } else {
             M.api.openFile('qruqsp.fielddaylog.exportCabrillo', {'tnid':M.curTenantID});
         }
+    }
+    this.menu.downloadExcel = function() {
+        M.api.openFile('qruqsp.fielddaylog.exportExcel', {'tnid':M.curTenantID});
     }
     this.menu.reopen = function(cb) {
         M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
