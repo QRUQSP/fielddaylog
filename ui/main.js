@@ -159,9 +159,11 @@ function qruqsp_fielddaylog_main() {
             'footerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             },
         'gota_stats':{'label':'GOTA', 'type':'simplegrid', 'num_cols':5,
-            'visible':function() { console.log('gota');return M.size != 'compact' 
+            'visible':function() { return M.size != 'compact' 
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'stats' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
+                && M.qruqsp_fielddaylog_main.menu.data.settings['category-operator'] != null 
+                && M.qruqsp_fielddaylog_main.menu.data.settings['category-operator'] == 'MULTI-OP'
                 ? 'yes' : 'hidden'; },
             'cellClasses':['bold', ''],
             'sortable':'yes',
