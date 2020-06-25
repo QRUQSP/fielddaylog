@@ -25,6 +25,7 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
         'mode'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Mode'),
         'frequency'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Frequency'),
         'operator'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Operator'),
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Options'),
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'),
         ));
     if( $rc['stat'] != 'ok' ) {

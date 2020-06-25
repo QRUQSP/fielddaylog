@@ -36,6 +36,16 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
     }
 
     //
+    // Load the settings
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
+    $rc = ciniki_core_dbDetailsQuery($ciniki, 'qruqsp_fielddaylog_settings', 'tnid', $args['tnid'], 'qruqsp.fielddaylog', 'settings', '');
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'qruqsp.fielddaylog.17', 'msg'=>'', 'err'=>$rc['err']));
+    }
+    $settings = isset($rc['settings']) ? $rc['settings'] : array();
+
+    //
     // Get the list of qsos
     //
     $strsql = "SELECT qruqsp_fielddaylog_qsos.id, "
@@ -47,6 +57,7 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
         . "qruqsp_fielddaylog_qsos.band, "
         . "qruqsp_fielddaylog_qsos.mode, "
         . "qruqsp_fielddaylog_qsos.frequency, "
+        . "qruqsp_fielddaylog_qsos.flags, "
         . "qruqsp_fielddaylog_qsos.operator "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
@@ -55,7 +66,9 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.fielddaylog', array(
         array('container'=>'qsos', 'fname'=>'id', 
-            'fields'=>array('id', 'qso_dt', 'qso_dt_display', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'operator')),
+            'fields'=>array('id', 'qso_dt', 'qso_dt_display', 'callsign', 'class', 'section', 
+                'band', 'mode', 'frequency', 'flags', 'operator',
+                )),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -71,6 +84,6 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
         $qso_ids = array();
     }
 
-    return array('stat'=>'ok', 'qsos'=>$qsos, 'nplist'=>$qso_ids);
+    return array('stat'=>'ok', 'qsos'=>$qsos, 'nplist'=>$qso_ids, 'settings'=>$settings);
 }
 ?>

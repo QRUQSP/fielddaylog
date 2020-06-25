@@ -15,7 +15,7 @@ function qruqsp_fielddaylog_main() {
         '440':'70 CM', 
         'other':'Other', 
         'satellite':'Satellite', 
-        'gota':'GOTA', 
+//        'gota':'GOTA', 
     };
     //
     // The panel to list the qso
@@ -45,6 +45,11 @@ function qruqsp_fielddaylog_main() {
             'mode':{'label':'Mode', 'type':'toggle', 
                 'onchange':'M.qruqsp_fielddaylog_main.menu.updateDups',
                 'toggles':{'CW':'CW', 'PH':'PH', 'DIG':'DIG'},
+                },
+            'flags1':{'label':'GOTA', 'type':'flagtoggle', 'default':'off', 'bit':0x01, 'field':'flags',
+                'visible':'no',
+//                'onchange':'M.qruqsp_fielddaylog_main.menu.updateDups',
+//                'toggles':{'CW':'CW', 'PH':'PH', 'DIG':'DIG'},
                 },
             'operator':{'label':'Operator', 'type':'text', 'visible':'no'},
             }},
@@ -99,9 +104,9 @@ function qruqsp_fielddaylog_main() {
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'qsos' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
                 ? 'yes' : 'hidden'; },
-            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode'],
-            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
-            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator'],
+            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
+            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
             'noData':'No contacts',
             'addTxt':'Add Contact',
             'addFn':'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',0,null);',
@@ -140,7 +145,7 @@ function qruqsp_fielddaylog_main() {
                 ? 'yes' : 'hidden'; },
             'html':'Map by <a href="https://www.mapability.com/ei8ic/maps/sections.php" target="_blank">EI8IC</a>. License: <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>.',
             },
-        'mode_band_stats':{'label':'Statistics', 'type':'simplegrid', 'num_cols':15,
+        'mode_band_stats':{'label':'Statistics', 'type':'simplegrid', 'num_cols':14,
             'visible':function() { return M.size != 'compact' 
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'stats' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
@@ -148,12 +153,25 @@ function qruqsp_fielddaylog_main() {
             'cellClasses':['bold', ''],
             'sortable':'yes',
             'sortTypes':['text','number','number','number','number','number','number','number','number','number','number','number','number','number','number'],
-            'headerValues':['Mode','160','80','40','20','15','10','6','2','220','70','SAT','GOTA','Other','Totals'],
+            'headerValues':['Mode','160','80','40','20','15','10','6','2','220','70','SAT','Other','Totals'],
             'headerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'cellClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'footerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             },
-        'section_band_stats':{'label':'', 'type':'simplegrid', 'num_cols':15,
+        'gota_stats':{'label':'GOTA', 'type':'simplegrid', 'num_cols':5,
+            'visible':function() { console.log('gota');return M.size != 'compact' 
+                && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'stats' 
+                    || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
+                ? 'yes' : 'hidden'; },
+            'cellClasses':['bold', ''],
+            'sortable':'yes',
+            'sortTypes':['text','number','number','number','number','number','number','number','number','number','number','number','number','number','number'],
+            'headerValues':['Operator','CW', 'Digital', 'Phone', 'Totals'],
+            'headerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            'cellClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            'footerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            },
+        'section_band_stats':{'label':'', 'type':'simplegrid', 'num_cols':14,
             'visible':function() { return M.size != 'compact' 
                 && (M.qruqsp_fielddaylog_main.menu.sections._tabs.selected == 'stats' 
                     || M.qruqsp_fielddaylog_main.menu.uisize == 'large') 
@@ -161,7 +179,7 @@ function qruqsp_fielddaylog_main() {
             'cellClasses':['bold', ''],
             'sortable':'yes',
             'sortTypes':['text','number','number','number','number','number','number','number','number','number','number','number','number','number','number'],
-            'headerValues':['Section','160','80','40','20','15','10','6','2','220','70','SAT','GOTA','Other','Totals'],
+            'headerValues':['Section','160','80','40','20','15','10','6','2','220','70','SAT','Other','Totals'],
             'headerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'cellClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
             'footerClasses':['aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
@@ -268,8 +286,7 @@ function qruqsp_fielddaylog_main() {
                 case 3: return d.section;
                 case 4: return d.band;
                 case 5: return d.mode;
-                case 6: return d.frequency;
-//                case 6: return d.operator;
+                case 6: return d.operator;
             }
         }
         if( s == 'vareas' ) {
@@ -279,6 +296,15 @@ function qruqsp_fielddaylog_main() {
             return '<b>' + d.name + '</b>';
         } else if( s == 'areas' && j > 0 && d.sections[(j-1)] != null ) {
             return d.sections[(j-1)].label;
+        }
+        if( s == 'gota_stats' ) {
+            switch(j) {
+                case 0: return '<b>' + d.label + '</b>';
+                case 1: return d.CW.num_qsos;
+                case 2: return d.DIG.num_qsos;
+                case 3: return d.PH.num_qsos;
+                case 4: return d.totals.num_qsos;
+            }
         }
         if( s == 'mode_band_stats' || s == 'section_band_stats' ) {
             switch(j) {
@@ -294,9 +320,9 @@ function qruqsp_fielddaylog_main() {
                 case 9: return (d.label=='Totals'?'<b>'+d[220].num_qsos+'</b>':d[220].num_qsos);
                 case 10: return (d.label=='Totals'?'<b>'+d[440].num_qsos+'</b>':d[440].num_qsos);
                 case 11: return (d.label=='Totals'?'<b>'+d.satellite.num_qsos+'</b>':d.satellite.num_qsos);
-                case 12: return (d.label=='Totals'?'<b>'+d.gota.num_qsos+'</b>':d.gota.num_qsos);
-                case 13: return (d.label=='Totals'?'<b>'+d.other.num_qsos+'</b>':d.other.num_qsos);
-                case 14: return '<b>' + d.totals.num_qsos + '</b>';
+//                case 12: return (d.label=='Totals'?'<b>'+d.gota.num_qsos+'</b>':d.gota.num_qsos);
+                case 12: return (d.label=='Totals'?'<b>'+d.other.num_qsos+'</b>':d.other.num_qsos);
+                case 13: return '<b>' + d.totals.num_qsos + '</b>';
             }
         }
     }
@@ -337,6 +363,11 @@ function qruqsp_fielddaylog_main() {
             ) {
             return 'statusgreen aligncenter';
         }
+        if( s == 'gota_stats' ) {
+            if( i == 'totals' ) {
+                return 'statusgrey aligncenter';
+            }
+        }
         if( s == 'mode_band_stats' || s == 'section_band_stats' ) {
             if( i == 'totals' ) {
                 return 'statusgrey aligncenter';
@@ -353,10 +384,10 @@ function qruqsp_fielddaylog_main() {
                 case 9: return (d[220].num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
                 case 10: return (d[440].num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
                 case 11: return (d.satellite.num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
-                case 12: return (d.gota.num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
-                case 13: return (d.other.num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
+//                case 12: return (d.gota.num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
+                case 12: return (d.other.num_qsos > 0 ? 'statusgreen ' : '') + 'aligncenter';
                 case 0: 
-                case 14: return 'statusgrey aligncenter bold';
+                case 13: return 'statusgrey aligncenter bold';
             }
         }
         if( this.sections[s].cellClasses != null ) {
@@ -365,6 +396,15 @@ function qruqsp_fielddaylog_main() {
         return '';
     }
     this.menu.footerValue = function(s, i, sc) {
+        if( s == 'gota_stats' ) {
+            switch(i) {
+                case 0: return this.data.totals[s].label;
+                case 1: return this.data.totals[s]['CW'].num_qsos;
+                case 2: return this.data.totals[s]['DIG'].num_qsos;
+                case 3: return this.data.totals[s]['PH'].num_qsos;
+                case 4: return this.data.totals[s].totals.num_qsos;
+            }
+        }
         if( s == 'mode_band_stats' || s == 'section_band_stats' ) {
             switch(i) {
                 case 0: return this.data.totals[s].label;
@@ -379,9 +419,9 @@ function qruqsp_fielddaylog_main() {
                 case 9: return this.data.totals[s][220].num_qsos;
                 case 10: return this.data.totals[s][440].num_qsos;
                 case 11: return this.data.totals[s].satellite.num_qsos;
-                case 12: return this.data.totals[s].gota.num_qsos;
-                case 13: return this.data.totals[s].other.num_qsos;
-                case 14: return this.data.totals[s].totals.num_qsos;
+//                case 12: return this.data.totals[s].gota.num_qsos;
+                case 12: return this.data.totals[s].other.num_qsos;
+                case 13: return this.data.totals[s].totals.num_qsos;
             }
         }
         return null;
@@ -389,7 +429,7 @@ function qruqsp_fielddaylog_main() {
     this.menu.switchTab = function(t) {
         this.sections._tabs.selected = t;
         this.refreshSection('_tabs');
-        this.showHideSections(['search', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
+        this.showHideSections(['search', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
         this.refreshMap();
     }
 /*    this.menu.expandUI = function() {
@@ -434,10 +474,15 @@ function qruqsp_fielddaylog_main() {
                 p.sections._notes.visible = 'yes';
             }
             var e = M.gE(p.panelUID + '_operator');
+            var flags1 = M.gE(p.panelUID + '_flags1');
+            p.sections.recent.num_cols = 6;
             if( e != null && e.parentNode != null && e.parentNode.parentNode != null ) {
                 if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                    p.sections.recent.num_cols = 7;
+                    flags1.parentNode.parentNode.style.display = 'table-row';
                     e.parentNode.parentNode.style.display = 'table-row';
                 } else {
+                    flags1.parentNode.parentNode.style.display = 'none';
                     e.parentNode.parentNode.style.display = 'none';
                 }
             }
@@ -452,8 +497,8 @@ function qruqsp_fielddaylog_main() {
             p.data.stats = rsp.stats;
             p.data.settings = rsp.settings;
             p.showHideSections(['_tabs']);
-            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']); 
-            p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
+            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']); 
+            p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
             p.show();
             p.refreshMap();
             });
@@ -473,9 +518,13 @@ function qruqsp_fielddaylog_main() {
             if( M.size != 'compact' && rsp.settings != null && rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
                 p.sections._notes.visible = 'yes';
             }
+            p.sections.qso.fields.flags1.visible = 'no';
             p.sections.qso.fields.operator.visible = 'no';
+            p.sections.recent.num_cols = 6;
             if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                p.sections.qso.fields.flags1.visible = 'yes';
                 p.sections.qso.fields.operator.visible = 'yes';
+                p.sections.recent.num_cols = 7;
             }
             p.refresh();
             p.show(cb);
@@ -496,7 +545,7 @@ function qruqsp_fielddaylog_main() {
             p.setFieldValue('callsign', '');
             p.setFieldValue('class', '');
             p.setFieldValue('section', '');
-            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
+            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
             p.refreshMap();
             M.gE(p.panelUID + '_callsign').focus();
         });
@@ -511,18 +560,19 @@ function qruqsp_fielddaylog_main() {
     this.qsos.nplist = [];
     this.qsos.sections = {
         'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':6,
-            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator'],
+            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', '', ''],
             'hint':'Search call signs',
             'noData':'No call signs found',
             },
         'qsos':{'label':'All Contacts', 'type':'simplegrid', 'num_cols':6, 
-            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode'],
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator'],
 //
 //          Sorting on a large list (+1000) will stall browser for multiple minutes, not good!
 //            'sortable':'yes',
 //            'sortTypes':['date', 'text', 'text', 'text', 'number', 'text'],
-            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
-            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
+            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
             'noData':'No contacts',
             'addTxt':'Add Contact',
             'addFn':'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.qsos.open();\',0,null);'
@@ -550,7 +600,7 @@ function qruqsp_fielddaylog_main() {
                 case 3: return d.section;
                 case 4: return d.band;
                 case 5: return d.mode;
-                case 6: return d.frequency;
+                case 6: return d.operator;
             }
         }
     }
@@ -567,6 +617,12 @@ function qruqsp_fielddaylog_main() {
             }
             var p = M.qruqsp_fielddaylog_main.qsos;
             p.data = rsp;
+            p.sections.search.livesearchcols = 6;
+            p.sections.qsos.num_cols = 6;
+            if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                p.sections.search.livesearchcols = 7;
+                p.sections.qsos.num_cols = 7;
+            }
             p.nplist = (rsp.nplist != null ? rsp.nplist : null);
             p.refresh();
             p.show(cb);
@@ -590,6 +646,7 @@ function qruqsp_fielddaylog_main() {
             'frequency':{'label':'Frequency', 'type':'text'},
             'band':{'label':'Band', 'type':'select', 'options':this.bandOptions},
             'mode':{'label':'Mode', 'type':'toggle', 'toggles':{'CW':'CW', 'PH':'PH', 'DIG':'DIG'}},
+            'flags1':{'label':'GOTA', 'type':'flagtoggle', 'default':'off', 'bit':0x01, 'field':'flags', 'visible':'no'},
             'operator':{'label':'Operator', 'type':'text', 'visible':'no'},
             }},
         '_notes':{'label':'Notes', 'visible':'no', 'fields':{
@@ -620,8 +677,10 @@ function qruqsp_fielddaylog_main() {
             if( rsp.settings != null && rsp.settings['ui-notes'] != null && rsp.settings['ui-notes'] == 'yes' ) {
                 p.sections._notes.visible = 'yes';
             }
+            p.sections.general.fields.flags1.visible = 'no';
             p.sections.general.fields.operator.visible = 'no';
             if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                p.sections.general.fields.flags1.visible = 'yes';
                 p.sections.general.fields.operator.visible = 'yes';
             }
             p.refresh();

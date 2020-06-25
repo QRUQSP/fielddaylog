@@ -1,0 +1,5 @@
+#
+# Add the flags field
+#
+ALTER TABLE qruqsp_fielddaylog_qsos ADD COLUMN flags tinyint unsigned not null AFTER operator;
+ALTER TABLE qruqsp_fielddaylog_qsos COMMENT='v1.02';

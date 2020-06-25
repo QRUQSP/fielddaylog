@@ -76,6 +76,7 @@ function qruqsp_fielddaylog_qsoGet($ciniki) {
             'mode'=>'',
             'frequency'=>'',
             'operator'=>'',
+            'flags'=>0,
             'notes'=>'',
         );
     }
@@ -93,6 +94,7 @@ function qruqsp_fielddaylog_qsoGet($ciniki) {
             . "qruqsp_fielddaylog_qsos.mode, "
             . "qruqsp_fielddaylog_qsos.frequency, "
             . "qruqsp_fielddaylog_qsos.operator, "
+            . "qruqsp_fielddaylog_qsos.flags, "
             . "qruqsp_fielddaylog_qsos.notes "
             . "FROM qruqsp_fielddaylog_qsos "
             . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
@@ -101,7 +103,7 @@ function qruqsp_fielddaylog_qsoGet($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.fielddaylog', array(
             array('container'=>'qsos', 'fname'=>'id', 
-                'fields'=>array('qso_dt', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'operator', 'notes'),
+                'fields'=>array('qso_dt', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'operator', 'flags', 'notes'),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {

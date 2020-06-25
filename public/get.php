@@ -74,6 +74,7 @@ function qruqsp_fielddaylog_get($ciniki) {
         . "qruqsp_fielddaylog_qsos.band, "
         . "qruqsp_fielddaylog_qsos.mode, "
         . "qruqsp_fielddaylog_qsos.frequency, "
+        . "qruqsp_fielddaylog_qsos.flags, "
         . "qruqsp_fielddaylog_qsos.operator "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
@@ -83,7 +84,7 @@ function qruqsp_fielddaylog_get($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.fielddaylog', array(
         array('container'=>'qsos', 'fname'=>'id', 
-            'fields'=>array('id', 'qso_dt', 'qso_dt_display', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'operator'),
+            'fields'=>array('id', 'qso_dt', 'qso_dt_display', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'flags', 'operator'),
             ),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -102,6 +103,10 @@ function qruqsp_fielddaylog_get($ciniki) {
     $rsp['band'] = '';
     $rsp['mode'] = '';
     $rsp['frequency'] = '';
+    $rsp['flags'] = 0;
+    $rsp['gota_stats'] = array(
+        
+        );
     $rsp['mode_band_stats'] = array();
     foreach(['CW'=>'CW', 'PH'=>'PH', 'DIG'=>'DIG', 'totals'=>'Totals'] as $k => $v) {
         $rsp['mode_band_stats'][$k] = array(
@@ -117,7 +122,7 @@ function qruqsp_fielddaylog_get($ciniki) {
             '220' => array('label' => '1.25 M', 'num_qsos' => 0),
             '440' => array('label' => '70 Cm', 'num_qsos' => 0),
             'satellite' => array('label' => 'SAT', 'num_qsos' => 0),
-            'gota' => array('label' => 'GOTA', 'num_qsos' => 0),
+//            'gota' => array('label' => 'GOTA', 'num_qsos' => 0),
             'other' => array('label' => 'OTHER', 'num_qsos' => 0),
             'totals' => array('label' => 'Totals', 'num_qsos' => 0),
             );
@@ -138,7 +143,7 @@ function qruqsp_fielddaylog_get($ciniki) {
             '220' => array('label' => '1.25 M', 'num_qsos' => 0),
             '440' => array('label' => '70 Cm', 'num_qsos' => 0),
             'satellite' => array('label' => 'SAT', 'num_qsos' => 0),
-            'gota' => array('label' => 'GOTA', 'num_qsos' => 0),
+//            'gota' => array('label' => 'GOTA', 'num_qsos' => 0),
             'other' => array('label' => 'OTHER', 'num_qsos' => 0),
             'totals' => array('label' => 'Totals', 'num_qsos' => 0),
             );
@@ -156,7 +161,7 @@ function qruqsp_fielddaylog_get($ciniki) {
         '220' => array('label' => '1.25 M', 'num_qsos' => 0),
         '440' => array('label' => '70 Cm', 'num_qsos' => 0),
         'satellite' => array('label' => 'SAT', 'num_qsos' => 0),
-        'gota' => array('label' => 'GOTA', 'num_qsos' => 0),
+//        'gota' => array('label' => 'GOTA', 'num_qsos' => 0),
         'other' => array('label' => 'OTHER', 'num_qsos' => 0),
         'totals' => array('label' => 'Totals', 'num_qsos' => 0),
         );
@@ -168,6 +173,15 @@ function qruqsp_fielddaylog_get($ciniki) {
         0 => 0,
         1 => 0,
         2 => 0,
+        );
+
+    $rsp['gota_stats'] = array();
+    $rsp['gota_stats']['totals'] = array(
+        'label' => 'Totals',
+        'CW' => array('label' => 'CW', 'num_qsos' => 0),
+        'DIG' => array('label' => 'DIG', 'num_qsos' => 0),
+        'PH' => array('label' => 'PH', 'num_qsos' => 0),
+        'totals' => array('label'=>'Totals', 'num_qsos' => 0),
         );
     //
     // Get stats
@@ -218,8 +232,28 @@ function qruqsp_fielddaylog_get($ciniki) {
             error_log('unknown section: ' . $qso['section'] . ' band: ' . $qso['band']);
             error_log(print_r($qso,true));
         }
+        if( ($qso['flags']&0x01) == 0x01 ) {
+            if( $qso['operator'] == '' && isset($settings['callsign']) ) {
+                $qso['operator'] = $settings['callsign'];
+            }
+            if( !isset($rsp['gota_stats'][$qso['operator']]) ) {
+                $rsp['gota_stats'][$qso['operator']] = array(
+                    'label' => $qso['operator'],
+                    'CW' => array('label' => 'CW', 'num_qsos' => 0),
+                    'DIG' => array('label' => 'DIG', 'num_qsos' => 0),
+                    'PH' => array('label' => 'PH', 'num_qsos' => 0),
+                    'totals' => array('label'=>'Totals', 'num_qsos' => 0),
+                    );
+            }
+       
+            if( isset($rsp['gota_stats'][$qso['operator']][$qso['mode']]['num_qsos']) ) {
+                $rsp['gota_stats'][$qso['operator']][$qso['mode']]['num_qsos'] += 1;
+                $rsp['gota_stats'][$qso['operator']]['totals']['num_qsos'] += 1;
+                $rsp['gota_stats']['totals'][$qso['mode']]['num_qsos'] += 1;
+            }
+        }
     }
-
+    
 //    $rsp['map_url'] = '/qruqsp-mods/fielddaylog/ui/maps/' 
 //        . sprintf("%08X", $map_bits[2]) . '_' . sprintf("%08X", $map_bits[1]) . '_' . sprintf("%08X", $map_bits[0]) . '.png';
 
@@ -278,6 +312,7 @@ function qruqsp_fielddaylog_get($ciniki) {
     //
     $rsp['recent'] = array_slice($qsos, 0, 25);
     $rsp['totals'] = array(
+        'gota_stats' => array_shift($rsp['gota_stats']),
         'mode_band_stats' => array_pop($rsp['mode_band_stats']),
         'section_band_stats' => array_pop($rsp['section_band_stats']),
         );

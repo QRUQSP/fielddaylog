@@ -30,6 +30,7 @@ function qruqsp_fielddaylog_objects(&$ciniki) {
             'mode' => array('name'=>'Mode'),
             'frequency' => array('name'=>'Frequency', 'default'=>''),
             'operator' => array('name'=>'Operator', 'default'=>''),
+            'flags' => array('name'=>'Options', 'default'=>'0'),
             'notes' => array('name'=>'Notes', 'default'=>''),
             ),
         'history_table' => 'qruqsp_fielddaylog_history',
