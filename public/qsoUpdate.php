@@ -17,7 +17,7 @@ function qruqsp_fielddaylog_qsoUpdate(&$ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
         'qso_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'QSO'),
-        'qso_dt'=>array('required'=>'no', 'blank'=>'no', 'type'=>'datetimetoutc', 'name'=>'UTC Date Time of QSO'),
+        'qso_dt'=>array('required'=>'no', 'blank'=>'no', 'type'=>'datetime', 'name'=>'UTC Date Time of QSO'),
         'callsign'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Call Sign'),
         'class'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Class'),
         'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'),
