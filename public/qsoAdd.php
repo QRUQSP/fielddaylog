@@ -158,7 +158,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     //
     // Update the map if new section
     //
-    if( !in_array($args['section'], $cache_map_sections) ) {
+    if( $args['section'] != 'DX' && !in_array($args['section'], $cache_map_sections) ) {
         //
         // Check cache
         //
