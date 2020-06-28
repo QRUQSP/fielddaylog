@@ -20,7 +20,7 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
-//        'qso_dt'=>array('required'=>'yes', 'blank'=>'no', 'type'=>'datetimetoutc', 'name'=>'UTC Date Time of QSO'),
+        'qso_dt'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'datetime', 'name'=>'UTC Date Time of QSO'),
         'callsign'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Call Sign'),
         'class'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Class'),
         'section'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Section'),
@@ -38,8 +38,10 @@ function qruqsp_fielddaylog_qsoAdd(&$ciniki) {
     $args['callsign'] = strtoupper($args['callsign']);
     $args['section'] = strtoupper($args['section']);
 
-    $dt = new DateTime('now', new DateTimezone('UTC'));
-    $args['qso_dt'] = $dt->format('Y-m-d H:i;s');
+    if( !isset($args['qso_dt']) || $args['qso_dt'] == '' ) {
+        $dt = new DateTime('now', new DateTimezone('UTC'));
+        $args['qso_dt'] = $dt->format('Y-m-d H:i:s');
+    }
 
     $args['class'] = trim(strtoupper($args['class']));
     if( !preg_match("/^[0-9]+[A-F]$/", $args['class']) ) {
