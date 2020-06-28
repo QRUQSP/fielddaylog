@@ -132,58 +132,58 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
         $cabrillo_qsos .= sprintf(" %-13s", $qso['callsign']);
         $cabrillo_qsos .= sprintf(" %-4s", $qso['class']);
         $cabrillo_qsos .= sprintf(" %-3s", $qso['section']);
-        $cabrillo_qsos .= "\n";
+        $cabrillo_qsos .= "\r\n";
     }
 
     $cabrillo = '';
-    $cabrillo .= "START-OF-LOG: 3.0\n";
-    $cabrillo .= "LOCATION: " . (isset($settings['section']) ? $settings['section'] : '') . "\n";
-    $cabrillo .= "CALLSIGN: " . (isset($settings['callsign']) ? $settings['callsign'] : '') . "\n";
-    $cabrillo .= "CONTEST: ARRL-FIELD-DAY\n";
-    $cabrillo .= "CLUB: " . (isset($settings['club']) ? $settings['club'] : '') . "\n";
-    $cabrillo .= "CATEGORY-OPERATOR: " . (isset($settings['category-operator']) ? $settings['category-operator'] : '') . "\n";
-    $cabrillo .= "CATEGORY-ASSISTED: " . (isset($settings['category-assisted']) ? $settings['category-assisted'] : '') . "\n";
+    $cabrillo .= "START-OF-LOG: 3.0\r\n";
+    $cabrillo .= "LOCATION: " . (isset($settings['section']) ? $settings['section'] : '') . "\r\n";
+    $cabrillo .= "CALLSIGN: " . (isset($settings['callsign']) ? $settings['callsign'] : '') . "\r\n";
+    $cabrillo .= "CONTEST: ARRL-FIELD-DAY\r\n";
+    $cabrillo .= "CLUB: " . (isset($settings['club']) ? $settings['club'] : '') . "\r\n";
+    $cabrillo .= "CATEGORY-OPERATOR: " . (isset($settings['category-operator']) ? $settings['category-operator'] : '') . "\r\n";
+    $cabrillo .= "CATEGORY-ASSISTED: " . (isset($settings['category-assisted']) ? $settings['category-assisted'] : '') . "\r\n";
     if( count($bands) > 1 ) {
-        $cabrillo .= "CATEGORY-BAND: ALL\n";
+        $cabrillo .= "CATEGORY-BAND: ALL\r\n";
     } elseif( count($bands) == 1 ) {
-        $cabrillo .= "CATEGORY-BAND: " . $bands[0] . "\n";
+        $cabrillo .= "CATEGORY-BAND: " . $bands[0] . "\r\n";
     } else {
-        $cabrillo .= "CATEGORY-BAND: \n";
+        $cabrillo .= "CATEGORY-BAND: \r\n";
     }
     if( count($modes) > 1 ) {
-        $cabrillo .= "CATEGORY-MODE: MIXED\n";
+        $cabrillo .= "CATEGORY-MODE: MIXED\r\n";
     } elseif( count($modes) == 1 ) {
-        $cabrillo .= "CATEGORY-MODE: " . $modes[0] . "\n";
+        $cabrillo .= "CATEGORY-MODE: " . $modes[0] . "\r\n";
     } else {
-        $cabrillo .= "CATEGORY-MODE: \n";
+        $cabrillo .= "CATEGORY-MODE: \r\n";
     }
     if( isset($settings['category-power']) && $settings['category-power'] == 'QRP-BATTERY' ) {
-        $cabrillo .= "CATEGORY-POWER: QRP\n";
+        $cabrillo .= "CATEGORY-POWER: QRP\r\n";
         $score = $qso_points * 5;
     } elseif( isset($settings['category-power']) && $settings['category-power'] == 'QRP' ) {
-        $cabrillo .= "CATEGORY-POWER: QRP\n";
+        $cabrillo .= "CATEGORY-POWER: QRP\r\n";
         $score = $qso_points * 2;
     } elseif( isset($settings['category-power']) && $settings['category-power'] == 'LOW' ) {
-        $cabrillo .= "CATEGORY-POWER: LOW\n";
+        $cabrillo .= "CATEGORY-POWER: LOW\r\n";
         $score = $qso_points * 2;
     } else {
-        $cabrillo .= "CATEGORY-POWER: " . (isset($settings['category-power']) ? $settings['category-power'] : '') . "\n";
+        $cabrillo .= "CATEGORY-POWER: " . (isset($settings['category-power']) ? $settings['category-power'] : '') . "\r\n";
         $score = $qso_points;
     }
-    $cabrillo .= "CATEGORY-STATION: " . (isset($settings['category-station']) ? $settings['category-station'] : 'FIXED') . "\n";
-    $cabrillo .= "CATEGORY-TRANSMITTER: " . (isset($settings['category-transmitter']) ? $settings['category-transmitter'] : '') . "\n";
-    $cabrillo .= "CLAIMED-SCORE: " . $score . "\n";
-    $cabrillo .= "NAME: " . (isset($settings['name']) ? $settings['name'] : '') . "\n";
-    $cabrillo .= "ADDRESS: " . (isset($settings['address']) ? $settings['address'] : '') . "\n";
-    $cabrillo .= "ADDRESS-CITY: " . (isset($settings['city']) ? $settings['city'] : '') . "\n";
-    $cabrillo .= "ADDRESS-STATE-PROVINCE: " . (isset($settings['state']) ? $settings['state'] : '') . "\n";
-    $cabrillo .= "ADDRESS-POSTALCODE: " . (isset($settings['postal']) ? $settings['postal'] : '') . "\n";
-    $cabrillo .= "ADDRESS-COUNTRY: " . (isset($settings['country']) ? $settings['country'] : '') . "\n";
+    $cabrillo .= "CATEGORY-STATION: " . (isset($settings['category-station']) ? $settings['category-station'] : 'FIXED') . "\r\n";
+    $cabrillo .= "CATEGORY-TRANSMITTER: " . (isset($settings['category-transmitter']) ? $settings['category-transmitter'] : '') . "\r\n";
+    $cabrillo .= "CLAIMED-SCORE: " . $score . "\r\n";
+    $cabrillo .= "NAME: " . (isset($settings['name']) ? $settings['name'] : '') . "\r\n";
+    $cabrillo .= "ADDRESS: " . (isset($settings['address']) ? $settings['address'] : '') . "\r\n";
+    $cabrillo .= "ADDRESS-CITY: " . (isset($settings['city']) ? $settings['city'] : '') . "\r\n";
+    $cabrillo .= "ADDRESS-STATE-PROVINCE: " . (isset($settings['state']) ? $settings['state'] : '') . "\r\n";
+    $cabrillo .= "ADDRESS-POSTALCODE: " . (isset($settings['postal']) ? $settings['postal'] : '') . "\r\n";
+    $cabrillo .= "ADDRESS-COUNTRY: " . (isset($settings['country']) ? $settings['country'] : '') . "\r\n";
 
-    $cabrillo .= "CREATED-BY: QRUQSP.org FieldDayLogger2020\n";
+    $cabrillo .= "CREATED-BY: QRUQSP.org FieldDayLogger2020\r\n";
 
     $cabrillo .= $cabrillo_qsos;
-    $cabrillo .= "END-OF-LOG:\n";
+    $cabrillo .= "END-OF-LOG:\r\n";
 
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT', true, 200);
     header("Content-type: text/plain");
