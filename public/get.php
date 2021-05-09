@@ -78,7 +78,7 @@ function qruqsp_fielddaylog_get($ciniki) {
         . "qruqsp_fielddaylog_qsos.operator "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND YEAR(qso_dt) = 2020 "
+        . "AND YEAR(qso_dt) = 2021 "
         . "ORDER BY qso_dt DESC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
@@ -261,11 +261,95 @@ function qruqsp_fielddaylog_get($ciniki) {
     // Calculate score
     //
     $qso_points = ($modes['CW']*2) + ($modes['DIG']*2) + $modes['PH'];
+    $score = $qso_points;
+    if( isset($settings['category-power']) && $settings['category-power'] == 'QRP-BATTERY' ) {
+        $score = $qso_points * 5;
+    } elseif( isset($settings['category-power']) && $settings['category-power'] == 'QRP' ) {
+        $score = $qso_points * 2;
+    } elseif( isset($settings['category-power']) && $settings['category-power'] == 'LOW' ) {
+        $score = $qso_points * 2;
+    }
+    
+
+    //
+    // Calculate bonus points
+    //
+    $bonus = 0;
+    $num_transmitters = 1;
+    if( isset($settings['class']) && preg_match("/^([0-9]+)([A-F])/", $settings['class'], $m) ) {
+        $num_transmitters = $m[1];
+        if( $num_transmitters > 20 ) {
+            $num_transmitters = 20;
+        }
+    }
+    if( isset($settings['bonus-emergency-power']) && $settings['bonus-emergency-power'] == 'yes' ) {
+        $bonus += ($num_transmitters * 100);
+    }
+    if( isset($settings['bonus-media-publicity']) && $settings['bonus-media-publicity'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-public-location']) && $settings['bonus-public-location'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-public-information']) && $settings['bonus-public-information'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-message-sent']) && $settings['bonus-message-sent'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-messages-sent']) && $settings['bonus-messages-sent'] > 0 ) {
+        $bonus += ($settings['bonus-messages-sent'] * 10);
+    }
+    if( isset($settings['bonus-satellite-qso']) && $settings['bonus-satellite-qso'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-alternate-power']) && $settings['bonus-alternate-power'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-w1aw-bulletin']) && $settings['bonus-w1aw-bulletin'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-education-activity']) && $settings['bonus-education-activity'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-visit-gov']) && $settings['bonus-visit-gov'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-visit-agency']) && $settings['bonus-visit-agency'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-gota']) && $settings['bonus-gota'] > 0 ) {
+        if( $settings['bonus-gota'] > 1000 ) {
+            $bonus += 1000;
+        } else {
+            $bonus += $settings['bonus-gota'];
+        }
+    }
+    if( isset($settings['bonus-web-submit']) && $settings['bonus-web-submit'] == 'yes' ) {
+        $bonus += 50;
+    }
+    if( isset($settings['bonus-youth-participation']) && $settings['bonus-youth-participation'] > 0 ) {
+        if( $settings['bonus-youth-participation'] > 100 ) {
+            $bonus += 100;
+        } else {
+            $bonus += $settings['bonus-youth-participation'];
+        }
+    }
+    if( isset($settings['bonus-social-media']) && $settings['bonus-social-media'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-safety-officer']) && $settings['bonus-safety-officer'] == 'yes' ) {
+        $bonus += 100;
+    }
+
+    $score += $bonus;
     $rsp['scores'] = array(
         array('label' => 'Phone Contacts', 'value' => $modes['PH']),
         array('label' => 'CW Contacts', 'value' => $modes['CW']),
         array('label' => 'Digital Contacts', 'value' => $modes['DIG']),
         array('label' => 'Contact Points', 'value' => $qso_points),
+        array('label' => 'Bonus Points', 'value' => $bonus),
+        array('label' => 'Score', 'value' => $score),
         );
 
     $rsp['mydetails'] = array(

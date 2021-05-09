@@ -68,7 +68,7 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
         . "qruqsp_fielddaylog_qsos.operator "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND YEAR(qso_dt) = 2020 "
+        . "AND YEAR(qso_dt) = 2021 "
         . "ORDER BY qso_dt ASC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
@@ -118,7 +118,7 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
                 case 440: $qso['frequency'] = 70; break;
             }
         }
-        $cabrillo_qsos .= sprintf(" %5s", $qso['frequency']);
+        $cabrillo_qsos .= sprintf("%6s", $qso['frequency']);
 
         if( $qso['mode'] == 'DIG' ) {
             $cabrillo_qsos .= " DG";
@@ -134,6 +134,92 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
         $cabrillo_qsos .= sprintf(" %-3s", $qso['section']);
         $cabrillo_qsos .= "\r\n";
     }
+
+    //
+    // Calculate score
+    //
+    $score = $qso_points;
+    if( isset($settings['category-power']) && $settings['category-power'] == 'QRP-BATTERY' ) {
+        $score = $qso_points * 5;
+    } elseif( isset($settings['category-power']) && $settings['category-power'] == 'QRP' ) {
+        $score = $qso_points * 2;
+    } elseif( isset($settings['category-power']) && $settings['category-power'] == 'LOW' ) {
+        $score = $qso_points * 2;
+    }
+    
+
+    //
+    // Calculate bonus points
+    //
+    $bonus = 0;
+    $num_transmitters = 1;
+    if( isset($settings['class']) && preg_match("/^([0-9]+)([A-F])/", $settings['class'], $m) ) {
+        $num_transmitters = $m[1];
+        if( $num_transmitters > 20 ) {
+            $num_transmitters = 20;
+        }
+    }
+    if( isset($settings['bonus-emergency-power']) && $settings['bonus-emergency-power'] == 'yes' ) {
+        $bonus += ($num_transmitters * 100);
+    }
+    if( isset($settings['bonus-media-publicity']) && $settings['bonus-media-publicity'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-public-location']) && $settings['bonus-public-location'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-public-information']) && $settings['bonus-public-information'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-message-sent']) && $settings['bonus-message-sent'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-messages-sent']) && $settings['bonus-messages-sent'] > 0 ) {
+        $bonus += ($settings['bonus-messages-sent'] * 10);
+    }
+    if( isset($settings['bonus-satellite-qso']) && $settings['bonus-satellite-qso'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-alternate-power']) && $settings['bonus-alternate-power'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-w1aw-bulletin']) && $settings['bonus-w1aw-bulletin'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-education-activity']) && $settings['bonus-education-activity'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-visit-gov']) && $settings['bonus-visit-gov'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-visit-agency']) && $settings['bonus-visit-agency'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-gota']) && $settings['bonus-gota'] > 0 ) {
+        if( $settings['bonus-gota'] > 1000 ) {
+            $bonus += 1000;
+        } else {
+            $bonus += $settings['bonus-gota'];
+        }
+    }
+    if( isset($settings['bonus-web-submit']) && $settings['bonus-web-submit'] == 'yes' ) {
+        $bonus += 50;
+    }
+    if( isset($settings['bonus-youth-participation']) && $settings['bonus-youth-participation'] > 0 ) {
+        if( $settings['bonus-youth-participation'] > 100 ) {
+            $bonus += 100;
+        } else {
+            $bonus += $settings['bonus-youth-participation'];
+        }
+    }
+    if( isset($settings['bonus-social-media']) && $settings['bonus-social-media'] == 'yes' ) {
+        $bonus += 100;
+    }
+    if( isset($settings['bonus-safety-officer']) && $settings['bonus-safety-officer'] == 'yes' ) {
+        $bonus += 100;
+    }
+
+    $score += $bonus;
 
     $cabrillo = '';
     $cabrillo .= "START-OF-LOG: 3.0\r\n";
@@ -159,16 +245,12 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
     }
     if( isset($settings['category-power']) && $settings['category-power'] == 'QRP-BATTERY' ) {
         $cabrillo .= "CATEGORY-POWER: QRP\r\n";
-        $score = $qso_points * 5;
     } elseif( isset($settings['category-power']) && $settings['category-power'] == 'QRP' ) {
         $cabrillo .= "CATEGORY-POWER: QRP\r\n";
-        $score = $qso_points * 2;
     } elseif( isset($settings['category-power']) && $settings['category-power'] == 'LOW' ) {
         $cabrillo .= "CATEGORY-POWER: LOW\r\n";
-        $score = $qso_points * 2;
     } else {
         $cabrillo .= "CATEGORY-POWER: " . (isset($settings['category-power']) ? $settings['category-power'] : '') . "\r\n";
-        $score = $qso_points;
     }
     $cabrillo .= "CATEGORY-STATION: " . (isset($settings['category-station']) ? $settings['category-station'] : 'FIXED') . "\r\n";
     $cabrillo .= "CATEGORY-TRANSMITTER: " . (isset($settings['category-transmitter']) ? $settings['category-transmitter'] : '') . "\r\n";
@@ -180,14 +262,14 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
     $cabrillo .= "ADDRESS-POSTALCODE: " . (isset($settings['postal']) ? $settings['postal'] : '') . "\r\n";
     $cabrillo .= "ADDRESS-COUNTRY: " . (isset($settings['country']) ? $settings['country'] : '') . "\r\n";
 
-    $cabrillo .= "CREATED-BY: QRUQSP.org FieldDayLogger2020\r\n";
+    $cabrillo .= "CREATED-BY: QRUQSP.org FieldDayLogger2021\r\n";
 
     $cabrillo .= $cabrillo_qsos;
     $cabrillo .= "END-OF-LOG:\r\n";
 
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT', true, 200);
     header("Content-type: text/plain");
-    header('Content-Disposition: attachment; filename="fieldday2020.log"');
+    header('Content-Disposition: attachment; filename="fieldday2021.log"');
 
     print $cabrillo;
     

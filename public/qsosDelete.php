@@ -42,6 +42,7 @@ function qruqsp_fielddaylog_qsosDelete(&$ciniki) {
     $strsql = "SELECT id, uuid "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND YEAR(qso_dt) = 2021 "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.fielddaylog', 'qso');
     if( $rc['stat'] != 'ok' ) {

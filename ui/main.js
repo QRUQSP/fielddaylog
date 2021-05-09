@@ -758,19 +758,72 @@ function qruqsp_fielddaylog_main() {
     //
     // The settings panel
     //
-    this.settings = new M.panel('Settings', 'qruqsp_fielddaylog_main', 'settings', 'mc', 'medium', 'sectioned', 'qruqsp.fielddaylog.main.settings');
+    this.settings = new M.panel('Settings', 'qruqsp_fielddaylog_main', 'settings', 'mc', 'large narrowaside', 'sectioned', 'qruqsp.fielddaylog.main.settings');
     this.settings.data = null;
     this.settings.settings_id = 0;
     this.settings.nplist = [];
     this.settings.sections = {
-        '_station':{'label':'Station Call Sign', 'fields':{
+        '_station':{'label':'Station Call Sign', 'aside':'yes', 'fields':{
             'callsign':{'label':'Call Sign', 'type':'text'},
             'class':{'label':'Class', 'type':'text'},
             'section':{'label':'Section', 'type':'text'},
             }},
-        '_ui':{'label':'Options', 'fields':{
+        '_ui':{'label':'Options', 'aside':'yes', 'fields':{
             'ui-notes':{'label':'Use notes', 'type':'toggle', 'default':'no', 'toggles':{'no':'No', 'yes':'Yes'}},
             'allow-dupes':{'label':'Allow Duplicate QSOs', 'type':'toggle', 'default':'yes', 'toggles':{'no':'No', 'yes':'Yes'}},
+            }},
+        '_bonus':{'label':'Bonus Points', 'fields':{
+            'bonus-emergency-power':{'label':'100% Emergency Power (7.3.1)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only Classes (A, B, C, E and F)',
+                },
+            'bonus-media-publicity':{'label':'Media Publicity (7.3.2)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All Classes',
+                },
+            'bonus-public-location':{'label':'Public Location (7.3.3)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only classes (A, B and F)',
+                },
+            'bonus-public-information':{'label':'Public Information Table (7.3.4)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only classes (A, B and F)',
+                },
+            'bonus-message-sent':{'label':'Message to Section Manager (7.3.5)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All classes',
+                },
+            'bonus-messages-sent':{'label':'Number Messages Sent (7.3.6)', 'type':'toggle', 'default':'0', 
+                'toggles':{'0':'0', '1':'1', '2':'2', '3':'3', '4':'4', '5':'5', '6':'6', '7':'7', '8':'8', '9':'9', '10':'10'}, 'hint':'All classes',
+                },
+            'bonus-satellite-qso':{'label':'Satellite QSO (7.3.7)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only classes (A, B and F)',
+                },
+            'bonus-alternate-power':{'label':'Alternate Power (7.3.8)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only classes (A, B, E and F)',
+                },
+            'bonus-w1aw-bulletin':{'label':'Copied W1AW Bulletin (7.3.9)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All classes',
+                },
+            'bonus-education-activity':{'label':'Education Activity (7.3.10)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only classes (A, D, E and F)',
+                },
+            'bonus-visit-gov':{'label':'Elected Government Official Visit (7.3.11)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All classes',
+                },
+            'bonus-visit-agency':{'label':'Agency Official Visit (7.3.12)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All classes',
+                },
+            'bonus-gota':{'label':'GOTA Bonus Points (7.3.13)', 'type':'text', 'default':'', 
+                'hint':'Max 1000 points',
+                },
+            'bonus-web-submit':{'label':'Submit Via Website (7.3.14)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All classes',
+                },
+            'bonus-youth-participation':{'label':'Youth Participation Points (7.3.15)', 'type':'text', 'default':'', 
+                'hint':'Max 100 points',
+                },
+            'bonus-social-media':{'label':'Social Media Promotion (7.3.16)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'All classes',
+                },
+            'bonus-safety-officer':{'label':'Safety Officer (7.3.17)', 'type':'toggle', 'default':'no', 
+                'toggles':{'no':'No', 'yes':'Yes'}, 'hint':'Only class (A)',
+                },
             }},
         '_logging':{'label':'Cabrillo Export Details', 'fields':{
             'category-operator':{'label':'Operator', 'type':'toggle', 'default':'SINGLE-OP', 'toggles':{'SINGLE-OP':'Single Operator', 'MULTI-OP':'Multi-Operator'}},

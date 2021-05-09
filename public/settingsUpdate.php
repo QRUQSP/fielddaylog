@@ -78,6 +78,23 @@ function qruqsp_fielddaylog_settingsUpdate(&$ciniki) {
         'state',
         'postal',
         'country',
+        'bonus-emergency-power',
+        'bonus-media-publicity',
+        'bonus-public-location',
+        'bonus-public-information',
+        'bonus-message-sent',
+        'bonus-messages-sent',
+        'bonus-satellite-qso',
+        'bonus-alternate-power',
+        'bonus-w1aw-bulletin',
+        'bonus-education-activity',
+        'bonus-visit-gov',
+        'bonus-visit-agency',
+        'bonus-gota',
+        'bonus-web-submit',
+        'bonus-youth-participation',
+        'bonus-social-media',
+        'bonus-safety-officer',
         );
     //
     // Check each valid setting and see if a new value was passed in the arguments for it.
