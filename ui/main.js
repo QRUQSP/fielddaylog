@@ -767,6 +767,7 @@ function qruqsp_fielddaylog_main() {
             'callsign':{'label':'Call Sign', 'type':'text'},
             'class':{'label':'Class', 'type':'text'},
             'section':{'label':'Section', 'type':'text'},
+            'club':{'label':'Club', 'type':'text'},
             }},
         '_ui':{'label':'Options', 'aside':'yes', 'fields':{
             'ui-notes':{'label':'Use notes', 'type':'toggle', 'default':'no', 'toggles':{'no':'No', 'yes':'Yes'}},

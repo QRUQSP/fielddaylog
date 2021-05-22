@@ -65,6 +65,7 @@ function qruqsp_fielddaylog_settingsUpdate(&$ciniki) {
         'callsign',
         'class',
         'section',
+        'club',
         'ui-notes',
         'allow-dupes',
         'category-operator',
