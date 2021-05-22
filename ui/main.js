@@ -860,7 +860,7 @@ function qruqsp_fielddaylog_main() {
         return {'method':'qruqsp.fielddaylog.settingsHistory', 'args':{'tnid':M.curTenantID, 'setting':i}};
     }
     this.settings.clearQSOs = function() {
-        M.confirm("Are you sure you want to permanently delete all contacts? This is only advised during testing. Once deleted there is noway to recover the contacts.",null,function() {
+        M.confirm("Are you sure you want to permanently delete all contacts? This is only advised during testing. Once deleted there is no way to recover the contacts.",null,function() {
             M.confirm("Are you really sure you want to delete all contacts?","Yes, Delete Contacts",function() {
                 M.api.getJSONCb('qruqsp.fielddaylog.qsosDelete', {'tnid':M.curTenantID}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
