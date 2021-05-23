@@ -73,6 +73,7 @@ function qruqsp_fielddaylog_main() {
         '_buttons':{'label':'', 'aside':'yes', 'buttons':{
             'all':{'label':'Contact List', 'fn':'M.qruqsp_fielddaylog_main.qsos.open(\'M.qruqsp_fielddaylog_main.menu.open();\');'},
             'cabrillo':{'label':'Download Cabrillo', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadCabrillo();'},
+            'adif':{'label':'Download ADIF', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadADIF();'},
             'excel':{'label':'Download Excel', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadExcel();'},
             }},
 //        'duplicates':{'label':'Duplicates', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
@@ -447,6 +448,9 @@ function qruqsp_fielddaylog_main() {
         var url = M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID}) + '&t=' + new Date().getTime();
         var e = M.gE(this.panelUID + '_map_image_id_preview').firstChild;
         e.src = url;
+    }
+    this.menu.downloadADIF = function() {
+        M.api.openFile('qruqsp.fielddaylog.exportADIF', {'tnid':M.curTenantID});
     }
     this.menu.downloadCabrillo = function() {
         // Check settings to make sure they've filled in
