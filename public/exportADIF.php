@@ -155,7 +155,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
     if( isset($settings['callsign']) && $settings['callsign'] != '' ) {
         $adif .= $settings['callsign'] . " logs generated @ " . $dt->format('Y-m-d H:i:s') . "Z\r\n";
     }
-    $adif .= "Contact Name: FD - 2021\r\n";
+    $adif .= "Contest Name: FD - 2021\r\n";
     $adif .= "<EOH>\r\n";
 
 
