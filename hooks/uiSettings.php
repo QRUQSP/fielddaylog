@@ -43,6 +43,10 @@ function qruqsp_fielddaylog_hooks_uiSettings(&$ciniki, $tnid, $args) {
             'edit'=>array('app'=>'qruqsp.fielddaylog.main'),
             );
         $rsp['menu_items'][] = $menu_item;
+
+        $rsp['settings_menu_items'][] = array('priority'=>4000, 'label'=>'Field Day Settings', 
+            'edit'=>array('app'=>'qruqsp.fielddaylog.main', 'args'=>array('settings'=>"'\"yes\"'")),
+            );
     }
 
     return $rsp;

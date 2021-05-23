@@ -771,7 +771,6 @@ function qruqsp_fielddaylog_main() {
             'callsign':{'label':'Call Sign', 'type':'text'},
             'class':{'label':'Class', 'type':'text'},
             'section':{'label':'Section', 'type':'text'},
-            'club':{'label':'Club', 'type':'text'},
             }},
         '_ui':{'label':'Options', 'aside':'yes', 'fields':{
             'ui-notes':{'label':'Use notes', 'type':'toggle', 'default':'no', 'toggles':{'no':'No', 'yes':'Yes'}},
@@ -854,6 +853,7 @@ function qruqsp_fielddaylog_main() {
             'state':{'label':'State/Province', 'type':'text'},
             'postal':{'label':'ZIP/Postal Code', 'type':'text'},
             'country':{'label':'Country', 'type':'text'},
+            'club':{'label':'Club', 'type':'text'},
             }},
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.qruqsp_fielddaylog_main.settings.save();'},
@@ -936,7 +936,11 @@ function qruqsp_fielddaylog_main() {
             M.alert('App Error');
             return false;
         }
-        
-        this.menu.open(cb);
+
+        if( args.settings != null && args.settings == 'yes' ) {
+            this.settings.open(cb);
+        } else {
+            this.menu.open(cb);
+        }
     }
 }
