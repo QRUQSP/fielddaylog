@@ -105,7 +105,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
         }
         $adif_qsos .= "<CALL:" . strlen($qso['callsign']) . ">" . $qso['callsign'];
         $adif_qsos .= "<QSO_DATE:" . strlen($qso['qso_date']) . ">" . $qso['qso_date'];
-        $adif_qsos .= "<QSO_TIME:" . strlen($qso['qso_time']) . ">" . $qso['qso_time'];
+        $adif_qsos .= "<TIME_ON:" . strlen($qso['qso_time']) . ">" . $qso['qso_time'];
         $adif_qsos .= "<ARRL_SECT:" . strlen($qso['section']) . ">" . $qso['section'];
         $adif_qsos .= "<CLASS:" . strlen($qso['class']) . ">" . $qso['class'];
         if( $qso['band'] == '220' ) {
