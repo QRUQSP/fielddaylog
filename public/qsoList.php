@@ -79,6 +79,23 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
         $qso_ids = array();
         foreach($qsos as $iid => $qso) {
             $qso_ids[] = $qso['id'];
+            if( $qso['frequency'] != '' ) {
+                $freq = preg_replace("/[^0-9]/", "", $qso['frequency']);
+                $freq = preg_replace("/^(4[2-5][0-9]|22[2-5]|14[4-8]|5[0-4]|2[8-9]|21|14|7|3|1)/", "$1.", $freq);
+                if( ($qso['band'] == 160 && strncmp("1.", $freq, 2) != 0 )
+                    || ($qso['band'] == 80 && strncmp("3.", $freq, 2) != 0 )
+                    || ($qso['band'] == 40 && strncmp("7.", $freq, 2) != 0 )
+                    || ($qso['band'] == 20 && strncmp("14.", $freq, 3) != 0 )
+                    || ($qso['band'] == 15 && strncmp("21.", $freq, 3) != 0 )
+                    || ($qso['band'] == 10 && !preg_match("/^2[8-9]\./", $freq))
+                    || ($qso['band'] == 6 && !preg_match("/^5[0-4]\./", $freq))
+                    || ($qso['band'] == 2 && !preg_match("/^14[4-8]\./", $freq))
+                    || ($qso['band'] == 220 && !preg_match("/^22[2-5]\./", $freq))
+                    || ($qso['band'] == 440 && !preg_match("/^4[2-5][0-9]\./", $freq))
+                    ) {
+                    $qsos[$iid]['freqbanderror'] = 'mismatch';
+                }
+            }
         }
     } else {
         $qsos = array();

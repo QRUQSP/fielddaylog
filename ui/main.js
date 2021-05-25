@@ -345,6 +345,9 @@ function qruqsp_fielddaylog_main() {
             ) {
             return 'statusred';
         }
+        if( s == 'recent' && d.freqbanderror != null ) {
+            return 'statusorange';
+        }
     }
     this.menu.cellClass = function(s, i, j, d) {
         if( (s == 'scores' || s == 'mydetails') && j == 0 ) {
@@ -613,6 +616,11 @@ function qruqsp_fielddaylog_main() {
                 case 6: return d.operator;
                 case 7: return d.notes;
             }
+        }
+    }
+    this.qsos.rowClass = function(s, i, d) {
+        if( s == 'qsos' && d.freqbanderror != null ) {
+            return 'statusorange';
         }
     }
     this.qsos.rowFn = function(s, i, d) {
