@@ -67,7 +67,8 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
         . "qruqsp_fielddaylog_qsos.band, "
         . "qruqsp_fielddaylog_qsos.mode, "
         . "qruqsp_fielddaylog_qsos.frequency, "
-        . "qruqsp_fielddaylog_qsos.operator "
+        . "qruqsp_fielddaylog_qsos.operator, "
+        . "qruqsp_fielddaylog_qsos.notes "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND YEAR(qso_dt) = 2021 "
@@ -76,7 +77,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'qruqsp.fielddaylog', array(
         array('container'=>'qsos', 'fname'=>'id', 
-            'fields'=>array('id', 'qso_dt', 'qso_date', 'qso_time', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'operator'),
+            'fields'=>array('id', 'qso_dt', 'qso_date', 'qso_time', 'callsign', 'class', 'section', 'band', 'mode', 'frequency', 'operator', 'notes'),
             ),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -145,6 +146,10 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
         }
         if( $qso['operator'] != '' ) {
             $adif_qsos .= "<OPERATOR:" . strlen($qso['operator']) . ">" . $qso['operator'];
+        }
+        if( $qso['notes'] != '' ) {
+            $notes = preg_replace("/\n/m", "\r\n", $qso['notes']);
+            $adif_qsos .= "<NOTES:" . strlen($qso['notes']) . ">" . $qso["notes"];
         }
 
         $adif_qsos .= "<EOR>\r\n";
