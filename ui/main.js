@@ -72,9 +72,11 @@ function qruqsp_fielddaylog_main() {
             },
         '_buttons':{'label':'', 'aside':'yes', 'buttons':{
             'all':{'label':'Contact List', 'fn':'M.qruqsp_fielddaylog_main.qsos.open(\'M.qruqsp_fielddaylog_main.menu.open();\');'},
+            'monitor':{'label':'Open Monitor', 'fn':'M.qruqsp_fielddaylog_main.menu.openMonitor();'},
             'cabrillo':{'label':'Download Cabrillo', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadCabrillo();'},
             'adif':{'label':'Download ADIF', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadADIF();'},
             'excel':{'label':'Download Excel', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadExcel();'},
+
             }},
 //        'duplicates':{'label':'Duplicates', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
 //            'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
@@ -451,6 +453,9 @@ function qruqsp_fielddaylog_main() {
         var url = M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID}) + '&t=' + new Date().getTime();
         var e = M.gE(this.panelUID + '_map_image_id_preview').firstChild;
         e.src = url;
+    }
+    this.menu.openMonitor = function() {
+        M.qruqsp_fielddaylog_main.monitor.open('M.qruqsp_fielddaylog_main.menu.reopen();');
     }
     this.menu.downloadADIF = function() {
         M.api.openFile('qruqsp.fielddaylog.exportADIF', {'tnid':M.curTenantID});
@@ -915,6 +920,168 @@ function qruqsp_fielddaylog_main() {
     }
     this.settings.addButton('save', 'Save', 'M.qruqsp_fielddaylog_main.settings.save();');
     this.settings.addClose('Cancel');
+
+    //
+    // The panel to list the qso
+    //
+    this.monitor = new M.panel('Field Day Logger', 'qruqsp_fielddaylog_main', 'monitor', 'mc', 'xlarge columns', 'sectioned', 'qruqsp.fielddaylog.main.monitor');
+    this.monitor.data = {};
+    this.monitor.nplist = [];
+    this.monitor.uisize = 'normal';
+    this.monitor.sections = {
+        'recent':{'label':'Recent Contacts', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
+            'panelcolumn':1,
+            'aside':'yes',
+            'headerValues':['Date/Time', 'Call Sign', 'Class', 'Section', 'Band', 'Mode', 'Operator'],
+            'headerClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
+            'cellClasses':['', '', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', ''],
+            'noData':'No contacts',
+            'limit':7,
+            },
+        'vareas':{'label':'Sections', 'type':'simplegrid', 'num_cols':12, //'panelcolumn':2,
+            'panelcolumn':1,
+            'aside':'yes',
+            'headerValues':['DX','1','2','3','4','5','6','7','8','9','0','CA'],
+            'headerClasses':['alignright', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            'cellClasses':['alignright', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter', 'aligncenter'],
+            },
+        'map':{'label':'Sections Worked Map', 'type':'imageform',
+            'panelcolumn':2,
+            'fields':{
+                'map_image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'size':'large', 'controls':'no', 'history':'no'},
+            }},
+        'map_credit':{'label':'', 'type':'html', 
+            'panelcolumn':2,
+            'html':'Map by <a href="https://www.mapability.com/ei8ic/maps/sections.php" target="_blank">EI8IC</a>. License: <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>.',
+            },
+    }
+    this.monitor.imageURL = function(s, i, d, img_id) {
+        if( s == 'cdnbandplan' ) {
+            return '/qruqsp-mods/fielddaylog/ui/cdnbandplan.jpg';
+        }
+        if( s == 'usbandplan' ) {
+            return '/qruqsp-mods/fielddaylog/ui/usbandplan.jpg';
+        }
+        return M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID});
+    }
+    this.monitor.cellValue = function(s, i, j, d) {
+        if( s == 'scores' || s == 'mydetails' ) {
+            switch(j) {
+                case 0: return '<b>' + d.label + '</b>';
+                case 1: return d.value;
+            }
+        }
+        if( s == 'qso' || s == 'compact_dups' ) {
+            switch(j) {
+                case 0: return M.multiline(d.callsign, d.qso_dt_display);
+                case 1: return M.multiline(d['class'], d.section);
+                case 2: return M.multiline(d.band, d.mode);
+            }
+        }
+        if( s == 'recent' || s == 'qsos' || s == 'search' || s == 'duplicates' ) {
+            switch(j) {
+                case 0: return d.qso_dt_display;
+                case 1: return d.callsign;
+                case 2: return d['class'];
+                case 3: return d.section;
+                case 4: return d.band;
+                case 5: return d.mode;
+                case 6: return d.operator;
+            }
+        }
+        if( s == 'vareas' ) {
+            return d[j].label;
+        }
+        if( s == 'areas' && j == 0 ) {
+            return '<b>' + d.name + '</b>';
+        } else if( s == 'areas' && j > 0 && d.sections[(j-1)] != null ) {
+            return d.sections[(j-1)].label;
+        }
+    }
+    this.monitor.cellClass = function(s, i, j, d) {
+        if( (s == 'scores' || s == 'mydetails') && j == 0 ) {
+            return 'statusgrey alignright';
+        }
+        if( s == 'areas' && j == 0 ) {
+            return 'statusgrey aligncenter';
+        }
+        if( s == 'vareas' 
+            && this.data.sections[d[j].label] != null
+            && this.data.sections[d[j].label].num_qsos > 0
+            ) {
+            return 'statusgreen aligncenter';
+        }
+        if( s == 'areas' && j > 0 
+            && d.sections[(j-1)] != null 
+            && d.sections[(j-1)].label != null
+            && this.data.sections[d.sections[(j-1)].label] != null
+            && this.data.sections[d.sections[(j-1)].label].num_qsos > 0
+            ) {
+            return 'statusgreen aligncenter';
+        }
+        if( this.sections[s].cellClasses != null ) {
+            return this.sections[s].cellClasses[j];
+        }
+        return '';
+    }
+    this.monitor.refreshMap = function() {
+        var url = M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID}) + '&t=' + new Date().getTime();
+        var e = M.gE(this.panelUID + '_map_image_id_preview').firstChild;
+        e.src = url;
+    }
+    this.monitor.reopen = function(cb) {
+        M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            var p = M.qruqsp_fielddaylog_main.monitor;
+/*            p.sections.recent.num_cols = 6;
+            if( e != null && e.parentNode != null && e.parentNode.parentNode != null ) {
+                if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                    p.sections.recent.num_cols = 7;
+                    flags1.parentNode.parentNode.style.display = 'table-row';
+                    e.parentNode.parentNode.style.display = 'table-row';
+                } else {
+                    flags1.parentNode.parentNode.style.display = 'none';
+                    e.parentNode.parentNode.style.display = 'none';
+                }
+            } 
+            p.data.scores = rsp.scores;
+            p.data.mydetails = rsp.mydetails;
+//            p.data.qsos = rsp.qsos;
+            p.data.recent = rsp.recent;
+            p.data.areas = rsp.areas;
+            p.data.vareas = rsp.vareas;
+            p.data.sections = rsp.sections;
+            p.data.map_sections = rsp.map_sections;
+            p.data.stats = rsp.stats;
+            p.data.settings = rsp.settings;
+            p.showHideSections(['_tabs']);
+            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']); 
+            p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
+            p.show();
+            p.refreshMap(); */
+            });
+    }
+    this.monitor.open = function(cb) {
+        M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            var p = M.qruqsp_fielddaylog_main.monitor;
+            p.data = rsp;
+            p.data.map_image_id = 1;  // Needs to be > 0 for core code to work
+            p.sections.recent.num_cols = 6;
+            if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
+                p.sections.recent.num_cols = 7;
+            }
+            p.refresh();
+            p.show(cb);
+        });
+    }
+    this.monitor.addClose('Back');
 
     //
     // Start the app
