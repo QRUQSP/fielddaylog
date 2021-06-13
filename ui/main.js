@@ -72,7 +72,7 @@ function qruqsp_fielddaylog_main() {
             },
         '_buttons':{'label':'', 'aside':'yes', 'buttons':{
             'all':{'label':'Contact List', 'fn':'M.qruqsp_fielddaylog_main.qsos.open(\'M.qruqsp_fielddaylog_main.menu.open();\');'},
-            'monitor':{'label':'Open Monitor', 'fn':'M.qruqsp_fielddaylog_main.menu.openMonitor();'},
+            'monitor':{'label':'Open Dashboard', 'fn':'M.qruqsp_fielddaylog_main.menu.openMonitor();'},
             'cabrillo':{'label':'Download Cabrillo', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadCabrillo();'},
             'adif':{'label':'Download ADIF', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadADIF();'},
             'excel':{'label':'Download Excel', 'fn':'M.qruqsp_fielddaylog_main.menu.downloadExcel();'},
@@ -924,7 +924,7 @@ function qruqsp_fielddaylog_main() {
     //
     // The panel to list the qso
     //
-    this.monitor = new M.panel('Field Day Logger', 'qruqsp_fielddaylog_main', 'monitor', 'mc', 'xlarge columns', 'sectioned', 'qruqsp.fielddaylog.main.monitor');
+    this.monitor = new M.panel('Dashboard', 'qruqsp_fielddaylog_main', 'monitor', 'mc', 'xlarge columns', 'sectioned', 'qruqsp.fielddaylog.main.monitor');
     this.monitor.data = {};
     this.monitor.nplist = [];
     this.monitor.uisize = 'normal';
@@ -1031,17 +1031,21 @@ function qruqsp_fielddaylog_main() {
         e.src = url;
     }
     this.monitor.reopen = function(cb) {
-        M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
+        M.api.getJSONBgCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
             }
             var p = M.qruqsp_fielddaylog_main.monitor;
-            p.data.recent = rsp.recent;
-            p.data.vareas = rsp.vareas;
-            p.data.map_sections = rsp.map_sections;
-            p.refreshSections(['recent','vareas']); 
-            p.refreshMap(); 
+            
+            if( p.data.recent[0] != null && rsp.recent[0] != null && rsp.recent[0].id != p.data.recent[0].id ) {
+                console.log('diff');
+                p.data = rsp;
+                //p.refreshSections(['recent','vareas']); 
+                //p.refreshMap(); 
+                p.refreshSections(['recent', 'vareas']);
+                p.refreshMap(); 
+            }
             p.timeout = setTimeout(M.qruqsp_fielddaylog_main.monitor.reopen, (60*1000));
             });
     }
