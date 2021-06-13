@@ -928,6 +928,7 @@ function qruqsp_fielddaylog_main() {
     this.monitor.data = {};
     this.monitor.nplist = [];
     this.monitor.uisize = 'normal';
+    this.monitor.timeout = null;
     this.monitor.sections = {
         'recent':{'label':'Recent Contacts', 'type':'simplegrid', 'num_cols':6, //'panelcolumn':1,
             'panelcolumn':1,
@@ -1036,35 +1037,18 @@ function qruqsp_fielddaylog_main() {
                 return false;
             }
             var p = M.qruqsp_fielddaylog_main.monitor;
-/*            p.sections.recent.num_cols = 6;
-            if( e != null && e.parentNode != null && e.parentNode.parentNode != null ) {
-                if( rsp.settings != null && rsp.settings['category-operator'] != null && rsp.settings['category-operator'] == 'MULTI-OP' ) {
-                    p.sections.recent.num_cols = 7;
-                    flags1.parentNode.parentNode.style.display = 'table-row';
-                    e.parentNode.parentNode.style.display = 'table-row';
-                } else {
-                    flags1.parentNode.parentNode.style.display = 'none';
-                    e.parentNode.parentNode.style.display = 'none';
-                }
-            } 
-            p.data.scores = rsp.scores;
-            p.data.mydetails = rsp.mydetails;
-//            p.data.qsos = rsp.qsos;
             p.data.recent = rsp.recent;
-            p.data.areas = rsp.areas;
             p.data.vareas = rsp.vareas;
-            p.data.sections = rsp.sections;
             p.data.map_sections = rsp.map_sections;
-            p.data.stats = rsp.stats;
-            p.data.settings = rsp.settings;
-            p.showHideSections(['_tabs']);
-            p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']); 
-            p.showHideSections(['_notes', 'recent', 'areas', 'vareas', 'map', 'map_credit', 'gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
-            p.show();
-            p.refreshMap(); */
+            p.refreshSections(['recent','vareas']); 
+            p.refreshMap(); 
+            p.timeout = setTimeout(M.qruqsp_fielddaylog_main.monitor.reopen, (60*1000));
             });
     }
     this.monitor.open = function(cb) {
+        if( this.timeout != null ) {
+            clearTimeout(this.timeout);
+        }
         M.api.getJSONCb('qruqsp.fielddaylog.get', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
@@ -1079,6 +1063,7 @@ function qruqsp_fielddaylog_main() {
             }
             p.refresh();
             p.show(cb);
+            p.timeout = setTimeout(M.qruqsp_fielddaylog_main.monitor.reopen, (60*1000));
         });
     }
     this.monitor.addClose('Back');
