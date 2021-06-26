@@ -62,6 +62,7 @@ function qruqsp_fielddaylog_qsoList($ciniki) {
         . "qruqsp_fielddaylog_qsos.notes "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND YEAR(qso_dt) = 2021 "
         . "ORDER BY qso_dt DESC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
