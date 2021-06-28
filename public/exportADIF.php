@@ -116,7 +116,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
         } else {
             $adif_qsos .= "<BAND:" . (strlen($qso['band'])+1) . ">" . $qso['band'] . "M";
         }
-        $adif_qsos .= "<STATION_CALLSIGN:" . strlen($settings['callsign']) . ">" . $qso['callsign'];
+        $adif_qsos .= "<STATION_CALLSIGN:" . strlen($settings['callsign']) . ">" . $settings['callsign'];
         if( $qso['frequency'] != '' ) {
             $qso['frequency'] = preg_replace("/[^0-9]/", "", $qso['frequency']);
             $qso['frequency'] = preg_replace("/^(4[2-5][0-9]|22[2-5]|14[4-8]|5[0-4]|2[8-9]|21|14|7|3|1)/", "$1.", $qso['frequency']);
