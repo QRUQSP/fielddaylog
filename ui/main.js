@@ -845,7 +845,7 @@ function qruqsp_fielddaylog_main() {
         '_logging':{'label':'Cabrillo Export Details', 'fields':{
             'category-operator':{'label':'Operator', 'type':'toggle', 'default':'SINGLE-OP', 'toggles':{'SINGLE-OP':'Single Operator', 'MULTI-OP':'Multi-Operator'}},
             'category-assisted':{'label':'Assisted', 'type':'toggle', 'default':'ASSISTED', 'toggles':{'ASSISTED':'Assisted', 'NON-ASSISTED':'Non-Assisted'}},
-            'category-power':{'label':'Power', 'type':'toggle', 'default':'LOW', 'toggles':{'QRP-BATTERY':'QRP-Battery', 'QRP':'QRP', 'LOW':'Low < 150w', 'HIGH':'High'}},
+            'category-power':{'label':'Power', 'type':'toggle', 'default':'LOW', 'toggles':{'QRP-BATTERY':'QRP-Battery', 'QRP':'QRP', 'LOW':'Low < 100w', 'HIGH':'High'}},
             'category-station':{'label':'Station', 'type':'toggle', 'default':'FIXED', 'toggles':{'FIXED':'Fixed', 
                 'MOBILE':'Mobile', 
                 'PORTABLE':'Portable', 

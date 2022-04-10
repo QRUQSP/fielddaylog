@@ -29,7 +29,7 @@ function qruqsp_fielddaylog_checkDupe(&$ciniki, $tnid, $args) {
         . "qruqsp_fielddaylog_qsos.notes "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
-        . "AND YEAR(qruqsp_fielddaylog_qsos.qso_dt) = 2021 "
+        . "AND YEAR(qruqsp_fielddaylog_qsos.qso_dt) = 2022 "
         . "AND qruqsp_fielddaylog_qsos.callsign = '" . ciniki_core_dbQuote($ciniki, $args['callsign']) . "' "
         . "AND qruqsp_fielddaylog_qsos.band = '" . ciniki_core_dbQuote($ciniki, $args['band']) . "' "
         . "AND qruqsp_fielddaylog_qsos.mode = '" . ciniki_core_dbQuote($ciniki, $args['mode']) . "' "
