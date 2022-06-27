@@ -227,6 +227,10 @@ function qruqsp_fielddaylog_main() {
         }
         return true;
     }
+    this.menu.clearForm = function(e,s,i) {
+        this.refresh();
+        this.show();
+    }
     this.menu.updateDups = function() {
         this.liveSearchCb('qso', 'callsign', this.formValue('callsign'));
 /*        M.api.getJSONBgCb('qruqsp.fielddaylog.dupSearch', {'tnid':M.curTenantID, 'callsign':this.formValue('callsign')}, function(rsp) {
@@ -569,6 +573,7 @@ function qruqsp_fielddaylog_main() {
         });
     }
     this.menu.addClose('Back');
+    this.menu.addLeftButton('cancel', 'Clear', 'M.qruqsp_fielddaylog_main.menu.open();');
 
     //
     // The panel to list all the qso
