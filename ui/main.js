@@ -51,7 +51,9 @@ function qruqsp_fielddaylog_main() {
 //                'onchange':'M.qruqsp_fielddaylog_main.menu.updateDups',
 //                'toggles':{'CW':'CW', 'PH':'PH', 'DIG':'DIG'},
                 },
-            'operator':{'label':'Operator', 'type':'text', 'visible':'no'},
+            'operator':{'label':'Operator', 'type':'text', 'visible':'no',
+                'onkeyup':'M.qruqsp_fielddaylog_main.menu.updateStorage',
+                },
             }},
         '_notes':{'label':'Notes', 'visible':'hidden', 'aside':'yes', 'fields':{
             'notes':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'small'},
@@ -60,9 +62,20 @@ function qruqsp_fielddaylog_main() {
 //            'visible':function() { return M.size == 'compact' ? 'yes' : 'no'; },
 //            'cellClasses':['multiline', 'multiline', 'multiline'],
 //            },
-        '_add':{'label':'', 'aside':'yes', 'buttons':{
+        '_add':{'label':'', 'aside':'yes', 'size':'half', 'buttons':{
             'add':{'label':'Add Contact', 'fn':'M.qruqsp_fielddaylog_main.menu.addQSO();'},
+            'bookmark':{'label':'Add Bookmark', 
+                'visible':function() { return M.modFlagSet('qruqsp.fielddaylog', 0x10); },
+                'fn':'M.qruqsp_fielddaylog_main.menu.bookmarkAdd();',
+                },
             }},
+        'bookmarks':{'label':'', 'aside':'yes', 'type':'simplegrid', 'num_cols':3,
+            'visible':function() { return M.qruqsp_fielddaylog_main.menu.data.bookmarks != null ? 'yes' : 'no'; },
+            'cellClasses':['', '', 'fabuttons'],
+            'rowFn':function(i, d) {
+                return 'M.qruqsp_fielddaylog_main.menu.bookmarkOpen(\'' + i + '\');';
+                },
+            },
         'mydetails':{'label':'My Details', 'type':'simplegrid', 'num_cols':2, 'aside':'yes',
             'visible':function() { return M.size != 'compact' ? 'yes' : 'no'; },
             'cellClasses':['bold',''],
@@ -219,6 +232,7 @@ function qruqsp_fielddaylog_main() {
         return M.api.getBinaryURL('qruqsp.fielddaylog.mapGet', {'tnid':M.curTenantID});
     }
     this.menu.keyUp = function(e,s,i) {
+        this.updateStorage();
         if( e.keyCode == 13 ) {
             this.addQSO();
             return false;
@@ -232,6 +246,7 @@ function qruqsp_fielddaylog_main() {
         this.show();
     }
     this.menu.updateDups = function() {
+        this.updateStorage();
         this.liveSearchCb('qso', 'callsign', this.formValue('callsign'));
 /*        M.api.getJSONBgCb('qruqsp.fielddaylog.dupSearch', {'tnid':M.curTenantID, 'callsign':this.formValue('callsign')}, function(rsp) {
             var p = M.qruqsp_fielddaylog_main.menu;
@@ -275,6 +290,13 @@ function qruqsp_fielddaylog_main() {
 //        return 'M.qruqsp_fielddaylog_main.qso.open(\'M.qruqsp_fielddaylog_main.menu.open();\',\'' + (d != null ? d.id : '') + '\');';
 //    }
     this.menu.cellValue = function(s, i, j, d) {
+        if( s == 'bookmarks' ) {
+            switch(j) {
+                case 0: return d.frequency;
+                case 1: return d.callsign;
+                case 2: return M.faBtn('&#xf1f8;', 'Delete', 'M.qruqsp_fielddaylog_main.menu.bookmarkDelete(\'' + i + '\');');
+            }
+        }
         if( s == 'scores' || s == 'mydetails' ) {
             switch(j) {
                 case 0: return '<b>' + d.label + '</b>';
@@ -548,9 +570,39 @@ function qruqsp_fielddaylog_main() {
                 p.sections.qso.fields.operator.visible = 'yes';
                 p.sections.recent.num_cols = 7;
             }
+            if( M.modFlagOn('qruqsp.fielddaylog', 0x10) && localStorage != null ) {
+                p.data.bookmarks = localStorage.getItem("qruqsp.fielddaylog.bookmarks")
+                if( p.data.bookmarks != null && p.data.bookmarks != '' ) {
+                    p.data.bookmarks = JSON.parse(p.data.bookmarks);
+                }
+            } else {
+                p.data.bookmarks = null;
+            }
+            if( localStorage != null ) {
+                if( localStorage.getItem('qruqsp.fielddaylog.frequency') != null ) {
+                    p.data.frequency = localStorage.getItem('qruqsp.fielddaylog.frequency');
+                }
+                if( localStorage.getItem('qruqsp.fielddaylog.band') != null ) {
+                    p.data.band = localStorage.getItem('qruqsp.fielddaylog.band');
+                }
+                if( localStorage.getItem('qruqsp.fielddaylog.mode') != null ) {
+                    p.data.mode = localStorage.getItem('qruqsp.fielddaylog.mode');
+                }
+                if( localStorage.getItem('qruqsp.fielddaylog.operator') != null ) {
+                    p.data.operator = localStorage.getItem('qruqsp.fielddaylog.operator');
+                }
+            }
             p.refresh();
             p.show(cb);
         });
+    }
+    this.menu.updateStorage = function() {
+        if( localStorage != null ) {
+            localStorage.setItem('qruqsp.fielddaylog.band', this.formValue('band'));
+            localStorage.setItem('qruqsp.fielddaylog.mode', this.formValue('mode'));
+            localStorage.setItem('qruqsp.fielddaylog.frequency', this.formValue('frequency'));
+            localStorage.setItem('qruqsp.fielddaylog.operator', this.formValue('operator'));
+        }
     }
     this.menu.addQSO = function() {
         var c = this.serializeForm('yes');
@@ -564,13 +616,76 @@ function qruqsp_fielddaylog_main() {
             p.data.map_image_id = 1;  // Needs to be > 0 for core code to work
             p.data.usbandplan_image_id = 1;  // Needs to be > 0 for core code to work
             p.data.cdnbandplan_image_id = 1;  // Needs to be > 0 for core code to work
+            var callsign = p.formFieldValue('callsign');
+            var frequency = p.formFieldValue('frequency');
             p.setFieldValue('callsign', '');
             p.setFieldValue('class', '');
             p.setFieldValue('section', '');
             p.refreshSections(['compact_dups', 'duplicates','scores', 'mydetails', 'recent','areas','vareas','gota_stats', 'mode_band_stats', 'section_band_stats', 'usbandplan', 'cdnbandplan']);
             p.refreshMap();
             M.gE(p.panelUID + '_callsign').focus();
+            if( M.modFlagOn('qruqsp.fielddaylog', 0x10) && localStorage != null ) {
+                var bookmarks = localStorage.getItem("qruqsp.fielddaylog.bookmarks")
+                if( bookmarks != null && bookmarks != '' ) {
+                    bookmarks = JSON.parse(bookmarks);
+                    for(var i in bookmarks) {
+                        if( bookmarks[i].callsign == callsign && bookmarks[i].frequency == frequency ) {
+                            bookmarks.splice(i, 1);
+                        }
+                    }
+                }
+                p.refreshSection('bookmarks');
+            }
         });
+    }
+    this.menu.bookmarkAdd = function() {
+        if( localStorage != null ) {
+            var bookmarks = localStorage.getItem("qruqsp.fielddaylog.bookmarks");
+            if( bookmarks == null || bookmarks == '' ) {
+                var bookmarks = [];
+            } else {
+                var bookmarks = JSON.parse(localStorage.getItem("qruqsp.fielddaylog.bookmarks"));
+            }
+            // Check if callsign or frequency already exists
+            for(var i in bookmarks) {
+                if( bookmarks[i] != null 
+                    && bookmarks[i].callsign == this.formValue('callsign')
+                    && bookmarks[i].frequency == this.formValue('frequency')
+                    ) {
+                    this.open();
+                    return true;
+                }
+            }
+            bookmarks.unshift({
+                'callsign':this.formValue('callsign'),
+                'class':this.formValue('class'),
+                'section':this.formValue('section'),
+                'frequency':this.formValue('frequency'),
+                'band':this.formValue('band'),
+                'mode':this.formValue('mode'),
+                });
+            localStorage.setItem("qruqsp.fielddaylog.bookmarks", JSON.stringify(bookmarks));
+            this.open();
+        }
+    }
+    this.menu.bookmarkOpen = function(i) {
+        var bookmarks = JSON.parse(localStorage.getItem("qruqsp.fielddaylog.bookmarks"));
+        if( bookmarks[i] != null ) {
+            this.setFieldValue('callsign', bookmarks[i].callsign);
+            this.setFieldValue('class', bookmarks[i].class);
+            this.setFieldValue('section', bookmarks[i].section);
+            this.setFieldValue('frequency', bookmarks[i].frequency);
+            this.setFieldValue('band', bookmarks[i].band);
+            this.setFieldValue('mode', bookmarks[i].mode);
+        }
+    }
+    this.menu.bookmarkDelete = function(i) {
+        var bookmarks = JSON.parse(localStorage.getItem("qruqsp.fielddaylog.bookmarks"));
+        if( bookmarks[i] != null ) {
+            bookmarks.splice(i, 1);
+            localStorage.setItem("qruqsp.fielddaylog.bookmarks", JSON.stringify(bookmarks));
+        }
+        this.open();
     }
     this.menu.addClose('Back');
     this.menu.addLeftButton('cancel', 'Clear', 'M.qruqsp_fielddaylog_main.menu.open();');
