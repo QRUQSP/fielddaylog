@@ -53,7 +53,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
         $strsql = "SELECT DISTINCT section "
             . "FROM qruqsp_fielddaylog_qsos "
             . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
-            . "AND YEAR(qso_dt) = 2022 "
+            . "AND YEAR(qso_dt) = 2023 "
             . "ORDER BY section "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
@@ -170,7 +170,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
         $strsql = "SELECT DISTINCT section "
             . "FROM qruqsp_fielddaylog_qsos "
             . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
-            . "AND YEAR(qso_dt) = 2022 "
+            . "AND YEAR(qso_dt) = 2023 "
             . "ORDER BY section "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
@@ -236,7 +236,7 @@ function qruqsp_fielddaylog_web_processRequest(&$ciniki, $settings, $tnid, $args
             . "qruqsp_fielddaylog_qsos.operator "
             . "FROM qruqsp_fielddaylog_qsos "
             . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
-            . "AND YEAR(qso_dt) = 2022 "
+            . "AND YEAR(qso_dt) = 2023 "
             . "ORDER BY qso_dt DESC "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
