@@ -383,7 +383,7 @@ function qruqsp_fielddaylog_get($ciniki) {
     foreach($areas as $aid => $area) {
         $row[] = array('label' => $area['name']);
     }
-    for($i = 0; $i < 13; $i++) {    
+    for($i = 0; $i < 14; $i++) {    
         $row = array();
         foreach($areas as $aid => $area) {
             if( isset($area['sections'][$i]['label']) ) {
