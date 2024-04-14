@@ -71,7 +71,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
         . "qruqsp_fielddaylog_qsos.notes "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND YEAR(qso_dt) = 2023 "
+        . "AND YEAR(qso_dt) = 2024 "
         . "ORDER BY qso_dt ASC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
@@ -160,7 +160,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
     if( isset($settings['callsign']) && $settings['callsign'] != '' ) {
         $adif .= $settings['callsign'] . " logs generated @ " . $dt->format('Y-m-d H:i:s') . "Z\r\n";
     }
-    $adif .= "Contest Name: FD - 2023\r\n";
+    $adif .= "Contest Name: FD - 2024\r\n";
     $adif .= "<EOH>\r\n";
 
 
@@ -168,7 +168,7 @@ function qruqsp_fielddaylog_exportADIF($ciniki) {
 
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT', true, 200);
     header("Content-type: text/plain");
-    header('Content-Disposition: attachment; filename="fieldday2023.adi"');
+    header('Content-Disposition: attachment; filename="fieldday2024.adi"');
 
     print $adif;
     

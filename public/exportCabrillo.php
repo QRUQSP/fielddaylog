@@ -68,7 +68,7 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
         . "qruqsp_fielddaylog_qsos.operator "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND YEAR(qso_dt) = 2023 "
+        . "AND YEAR(qso_dt) = 2024 "
         . "ORDER BY qso_dt ASC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
@@ -262,14 +262,14 @@ function qruqsp_fielddaylog_exportCabrillo($ciniki) {
     $cabrillo .= "ADDRESS-POSTALCODE: " . (isset($settings['postal']) ? $settings['postal'] : '') . "\r\n";
     $cabrillo .= "ADDRESS-COUNTRY: " . (isset($settings['country']) ? $settings['country'] : '') . "\r\n";
 
-    $cabrillo .= "CREATED-BY: QRUQSP.org FieldDayLogger2023\r\n";
+    $cabrillo .= "CREATED-BY: QRUQSP.org FieldDayLogger2024\r\n";
 
     $cabrillo .= $cabrillo_qsos;
     $cabrillo .= "END-OF-LOG:\r\n";
 
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT', true, 200);
     header("Content-type: text/plain");
-    header('Content-Disposition: attachment; filename="fieldday2023.log"');
+    header('Content-Disposition: attachment; filename="fieldday2024.log"');
 
     print $cabrillo;
     
