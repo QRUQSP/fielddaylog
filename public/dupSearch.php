@@ -55,7 +55,7 @@ function qruqsp_fielddaylog_dupSearch($ciniki) {
         . "qruqsp_fielddaylog_qsos.operator "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND YEAR(qso_dt) = 2024 "
+        . "AND YEAR(qso_dt) = 2025 "
         . "AND ("
             . "callsign LIKE '" . ciniki_core_dbQuote($ciniki, $args['callsign']) . "%' "
             . "OR callsign LIKE '% " . ciniki_core_dbQuote($ciniki, $args['callsign']) . "%' "

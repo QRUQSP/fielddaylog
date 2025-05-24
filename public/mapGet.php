@@ -58,7 +58,7 @@ function qruqsp_fielddaylog_mapGet(&$ciniki) {
     $strsql = "SELECT DISTINCT section "
         . "FROM qruqsp_fielddaylog_qsos "
         . "WHERE qruqsp_fielddaylog_qsos.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND YEAR(qso_dt) = 2024 "
+        . "AND YEAR(qso_dt) = 2025 "
         . "ORDER BY section "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
